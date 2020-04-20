@@ -24,7 +24,34 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="ph.appdev.grocerylistapp.MainActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
 
+        <activity android:name=".CheckListActivity">
+            <intent-filter>
+                <action android:name="ph.appdev.grocerylistapp.CheckListActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+
+        <activity android:name=".ItemsDialog">
+            <intent-filter>
+                <action android:name="ph.appdev.grocerylistapp.ItemsDialog"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".AddtnlInfoDialog">
+            <intent-filter>
+                <action android:name="ph.appdev.grocerylistapp.AddtnlInfoDialog"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
 
     </application>
 

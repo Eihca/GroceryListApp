@@ -14,21 +14,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class LogInActivity extends AppCompatActivity {
     EditText email, password;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
     }
 
-    public void togglePassVisibility(ImageView view){
+    public void togglePassVisibility(View view){
         password = findViewById(R.id.password);
+        ImageView imgviewbtn = (ImageView) view;
         if(view.getId() == R.id.show_pass_btn){
             if (password.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
-                view.setImageResource(R.drawable.ic_visibility_off);
+                imgviewbtn.setImageResource(R.drawable.ic_visibility_off);
                 //Show Password
                 password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             } else {
-                view.setImageResource(R.drawable.ic_visibility);
+                imgviewbtn.setImageResource(R.drawable.ic_visibility);
                 //Hide Password
                 password.setTransformationMethod(PasswordTransformationMethod.getInstance());
             }
@@ -36,7 +39,7 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     public void logIn(View view){
-        Intent logintent = new Intent(getApplicationContext(), SignUpActivity.class);
+        Intent logintent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(logintent);
     }
 

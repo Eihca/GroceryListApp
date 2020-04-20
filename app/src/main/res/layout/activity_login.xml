@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_user_account"
             android:drawablePadding="10dp"
-            android:hint="Email Address"
+            android:hint="EMAIL ADDRESS"
             android:inputType="text"
             android:padding="20dp"
             android:background="@drawable/rounded_edittxtbg"

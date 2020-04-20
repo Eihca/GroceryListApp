@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/addeditinfolbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add/Edit Additional Info"
+        android:textSize="@dimen/margin_padding_size_large"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:fontFamily="monospace"
+        android:layout_margin="@dimen/margin_padding_size_small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Spinner
+        android:id="@+id/infocategory"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="Category"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addeditinfolbl"
+        android:background="@drawable/border"
+        android:layout_margin="@dimen/margin_padding_size_medium"/>
+
+    <EditText
+        android:id="@+id/infoname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type name here.."
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infocategory"
+        android:background="@drawable/border"
+        android:layout_margin="@dimen/margin_padding_size_medium"/>
+
+    <EditText
+        android:id="@+id/infovalue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type price here.."
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infoname"
+        android:background="@drawable/border"
+        android:layout_margin="@dimen/margin_padding_size_medium"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/guideline"
+        app:layout_constraintGuide_percent=".5"/>
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/infovalue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/gradient_bg"
+        android:text="CANCEL"
+        android:layout_marginTop="@dimen/margin_padding_size_medium"
+        android:textColor="@android:color/white"/>
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/infovalue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/gradient_bg"
+        android:text="ADD"
+        android:layout_marginTop="@dimen/margin_padding_size_medium"
+        android:textColor="@android:color/white"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
