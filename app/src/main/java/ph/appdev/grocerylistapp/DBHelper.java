@@ -50,9 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean saveUser(String name, String email, String password)
     {
         Cursor cursor = getUser(email);
-
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
         contentValues.put("password", password);
@@ -75,9 +73,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public Cursor getUser(String email){
 
         SQLiteDatabase db = this.getReadableDatabase();
-
         String sql = "SELECT * FROM " + TBL_USER + " WHERE email=?";
-
         return db.rawQuery(sql, new String[] { email });
     }
 

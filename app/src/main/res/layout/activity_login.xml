@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/cllogin">
 
     <ImageView
         android:layout_width="match_parent"
@@ -72,9 +73,8 @@
 
             <EditText
                 android:id="@+id/password"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
                 android:background="@drawable/rounded_edittxtbg"
                 android:drawableLeft="@drawable/ic_lock_outline_black_24dp"
                 android:drawablePadding="10dp"
@@ -85,6 +85,7 @@
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/show_pass_btn"
                 android:drawableStart="@drawable/ic_lock_outline_black_24dp" />
 
             <ImageView
@@ -97,7 +98,9 @@
                 android:src="@drawable/ic_visibility"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/password"/>
+                app:layout_constraintEnd_toEndOf="@id/relpassword"
+                android:layout_marginEnd="@dimen/margin_padding_size_medium"
+                android:layout_marginRight="@dimen/margin_padding_size_medium"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button

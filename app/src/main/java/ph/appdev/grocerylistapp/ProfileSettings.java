@@ -52,6 +52,7 @@ public class ProfileSettings extends AppCompatActivity {
     }
 
     public void logOut(View view){
+        SavedSharedPreference.setLoggedIn(getApplicationContext(), false);
         Intent logoutintent = new Intent(getApplicationContext(), LogInActivity.class);
         startActivity(logoutintent);
     }
