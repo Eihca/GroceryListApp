@@ -22,20 +22,24 @@
                 android:textColor="@android:color/white"
                 android:text="Grocery List Calculator"
                 android:textStyle="bold"
+                android:textSize="@dimen/text_size_large"
                 android:fontFamily="monospace"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:gravity="center_vertical"/>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/user_prof_pic_card"
                 android:layout_width="40dp"
                 android:layout_height="?actionBarSize"
                 app:cardCornerRadius="50dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_margin="@dimen/margin_padding_size_small">
+                android:layout_margin="@dimen/margin_padding_size_small"
+                android:onClick="gotoProfileSettings">
 
                 <ImageView
+                    android:id="@+id/user_prof_pic"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
@@ -65,6 +69,7 @@
         android:layout_margin="@dimen/margin_padding_size_small"
         app:borderWidth="0dp"
         android:src="@android:drawable/ic_input_add"
-        android:tint="@android:color/white"/>
+        android:tint="@android:color/white"
+        android:onClick="gotoChecklist"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,8 @@
 package ph.appdev.grocerylistapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,5 +13,11 @@ public class CheckListActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checklist);
+    }
+
+    public void backtoMain(View view){
+        Intent tomain = new Intent();
+        setResult(RESULT_CANCELED, tomain);
+        finish();
     }
 }

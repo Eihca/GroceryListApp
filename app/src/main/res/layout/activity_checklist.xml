@@ -40,7 +40,8 @@
                         android:scaleType="centerCrop"
                         android:tint="@android:color/white"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"/>
+                        android:layout_alignParentStart="true"
+                        android:onClick="backtoMain"/>
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -155,7 +156,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/border"
                     android:paddingTop="@dimen/margin_padding_size_large"
-                    android:paddingBottom="@dimen/margin_padding_size_xxlarge" />
+                    android:paddingBottom="@dimen/margin_padding_size_xxlarge"
+                    android:minHeight="80dp"/>
 
                 <Button
                     android:id="@+id/additembtn"
@@ -164,7 +166,8 @@
                     android:text="Add an item"
                     android:textColor="@android:color/white"
                     android:background="@drawable/gradient_bg"
-                    android:layout_alignBottom="@id/rvlistitems"/>
+                    android:layout_alignBottom="@id/rvlistitems"
+                    android:layout_marginTop="@dimen/margin_padding_size_large"/>
 
             </RelativeLayout>
 
@@ -244,7 +247,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/border"
                     android:paddingTop="@dimen/margin_padding_size_large"
-                    android:paddingBottom="@dimen/margin_padding_size_xxlarge" />
+                    android:paddingBottom="@dimen/margin_padding_size_xxlarge"
+                    android:minHeight="80dp"/>
 
                 <Button
                     android:id="@+id/addaddtnlinfo"

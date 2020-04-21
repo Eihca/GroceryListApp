@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginTop="4dp"
+    app:cardCornerRadius="10dp"
+    android:padding="30dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <CheckBox
+            android:id="@+id/chkbx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_margin="@dimen/margin_padding_size_small"/>
+
+        <TextView
+            android:id="@+id/info_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_padding_size_small"
+            android:layout_marginLeft="@dimen/margin_padding_size_small"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/margin_padding_size_medium"
+            android:layout_marginRight="@dimen/margin_padding_size_medium"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/verguide"
+            app:layout_constraintStart_toEndOf="@id/chkbx"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Info Name" />
+
+        <TextView
+            android:id="@+id/item_categ"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="Info Category"
+            android:textSize="@dimen/text_size_medium"
+            app:layout_constraintEnd_toEndOf="@id/verguide"
+            app:layout_constraintStart_toStartOf="@id/info_name"
+            app:layout_constraintTop_toBottomOf="@+id/info_name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginRight="@dimen/margin_padding_size_medium"
+            android:layout_marginBottom="@dimen/margin_padding_size_medium"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/verguide"
+            app:layout_constraintGuide_percent=".65"/>
+
+        <TextView
+            android:id="@+id/info_value"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="@id/verguide"
+            app:layout_constraintEnd_toStartOf="@id/percent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="0"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/percent"
+            android:layout_width="wrap_content"
+            android:layout_marginRight="@dimen/margin_padding_size_small"
+            android:layout_marginEnd="@dimen/margin_padding_size_small"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toStartOf="@id/verguide1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="%"
+            android:gravity="center"/>
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/verguide1"
+            app:layout_constraintGuide_percent=".8"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@android:color/black"
+            app:layout_constraintStart_toStartOf="@id/verguide1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/info_amount"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toEndOf="@id/verguide1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="0.00"
+            android:background="@android:color/transparent"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
