@@ -1,8 +1,11 @@
 package ph.appdev.grocerylistapp;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -42,6 +45,40 @@ public class DBHelper extends SQLiteOpenHelper {
     public void dropDB(SQLiteDatabase db){
         db.execSQL(DROP_TBL_USER);
         db.execSQL(CREATE_TBL_USER);
+    }
+
+    public boolean saveUser(String name, String email, String password)
+    {
+        Cursor cursor = getUser(email);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", name);
+        contentValues.put("password", password);
+
+        long result;
+        if (cursor.getCount() == 0) { // Record does not exist
+            contentValues.put("email", email);
+            result = db.insert(TBL_USER, null, contentValues);
+        } else { // Record exists
+            result = db.update(TBL_USER, contentValues, "email=?", new String[] { email });
+        }
+
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Cursor getUser(String email){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql = "SELECT * FROM " + TBL_USER + " WHERE email=?";
+
+        return db.rawQuery(sql, new String[] { email });
     }
 
 }
