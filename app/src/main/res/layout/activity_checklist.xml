@@ -48,6 +48,8 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_savechanges"
                         android:scaleType="centerCrop"
+                        android:id="@+id/savemylist"
+                        android:onClick="saveMyList"
                         android:tint="@android:color/white"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"/>
@@ -114,6 +116,7 @@
                     android:layout_margin="@dimen/margin_padding_size_small"/>
 
                 <EditText
+                    android:id="@+id/list_notes"
                     android:layout_marginTop="25dp"
                     android:layout_width="match_parent"
                     android:paddingTop="@dimen/margin_padding_size_large"
@@ -164,6 +167,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Add an item"
+                    android:onClick="openDialog"
                     android:textColor="@android:color/white"
                     android:background="@drawable/gradient_bg"
                     android:layout_alignBottom="@id/rvlistitems"
@@ -256,6 +260,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_bg"
                     android:textColor="@android:color/white"
+                    android:onClick="openDialog"
                     android:text="Add Additional Info"
                     android:layout_alignBottom="@id/rvaddtnlinfo"/>
 

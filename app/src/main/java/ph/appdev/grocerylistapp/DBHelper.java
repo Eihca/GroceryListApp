@@ -158,18 +158,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return mylist;
     }
 
-    public List<MyList> getUserMyLists(String email) {
-        List< MyList> mylists = new ArrayList<>();
+    public ArrayList<MyList> getUserMyLists(String email) {
+        ArrayList< MyList> mylists = new ArrayList<>();
 
         SQLiteDatabase db = this.getWritableDatabase();
-        String usermlistsQuery = "SELECT  * FROM " + TBL_USERMYLIST + " tr, " +  User.TBL_USER + " tu  " +  MyList.TBL_MYLIST + " tml  WHERE tu." +  User.EMAIL + " = " + email  +  " AND tu."  +  ID + " = tr." + USER_ID + " AND tml." + ID + " =  tr." +  MYLIST_ID;
+        String usermlistsQuery = "SELECT * FROM " + TBL_USERMYLIST + " tum, " +  User.TBL_USER + " tu, " +  MyList.TBL_MYLIST + " tml  WHERE tu." +  User.EMAIL + " = '" + email  +  "' AND tu."  + User.ID + " = tum." + USER_ID + " AND tml." + MyList.ID + " =  tum." +  MYLIST_ID;
         Cursor cursor = db.rawQuery(usermlistsQuery, null);
 
-/*Select All Query
-    String selectQuery = "SELECT  * FROM " + MyList.TBL_MYLIST + " ORDER BY " +
-            MyList.TIMESTAMP + " DESC"; */
-
-        // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
                 MyList mylist = new MyList();
@@ -191,12 +186,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int getUserMyListsCount(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String usermlistsQuery = "SELECT  * FROM " + TBL_USERMYLIST + " tr, " +  User.TBL_USER + " tu  " +  MyList.TBL_MYLIST + " tml  WHERE tu." +  User.EMAIL + " = " + email  +  " AND tu."  +  ID + " = tr." + USER_ID + " AND tml." + ID + " =  tr." +  MYLIST_ID;
+        String usermlistsQuery = "SELECT * FROM " + TBL_USERMYLIST + " tum, " +  User.TBL_USER + " tu, " +  MyList.TBL_MYLIST + " tml  WHERE tu." +  User.EMAIL + " = '" + email  +  "' AND tu."  + User.ID + " = tum." + USER_ID + " AND tml." + MyList.ID + " =  tum." +  MYLIST_ID;
         Cursor cursor = db.rawQuery(usermlistsQuery, null);
-
-        /*String countQuery = "SELECT  * FROM " + MyList.TBL_MYLIST;*/
-
-        /*Cursor cursor = db.rawQuery(countQuery, null);*/
 
         int count = cursor.getCount();
         cursor.close();
@@ -288,7 +279,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
     public ArrayList<Checklist> getUserMyListChecklists(String mylist_title) {
         ArrayList<Checklist> checklists = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + TBL_MYCHECKLIST + " tmc, " +  MyList.TBL_MYLIST + " tml  " +  Checklist.TBL_NAME + " tc  WHERE tml." + MyList.TITLE  + " = " + mylist_title +  " AND tml."  +  ID + " = tmc." + MYLIST_ID + " AND tc." + ID + " =  tmc." +  CHECKLIST_ID;
+        String selectQuery = "SELECT * FROM " + TBL_MYCHECKLIST + " tmc, " +  MyList.TBL_MYLIST + " tml, " +  Checklist.TBL_NAME + " tc  WHERE tml." + MyList.TITLE  + " = " + mylist_title +  " AND tml."  +  MyList.ID + " = tmc." + MYLIST_ID + " AND tc." + Checklist.ID + " =  tmc." +  CHECKLIST_ID;
 
         Log.e(LOG, selectQuery);
 

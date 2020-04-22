@@ -70,7 +70,7 @@ public class Checklist {
         this.isChecked = isChecked;
     }
 
-    public Double gettPrice(){
+    public Double getPrice(){
         return price;
     }
 

@@ -41,7 +41,7 @@
             tools:text="Info Name" />
 
         <TextView
-            android:id="@+id/item_categ"
+            android:id="@+id/info_categ"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
