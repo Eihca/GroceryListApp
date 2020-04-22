@@ -15,6 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import ph.appdev.grocerylistapp.model.MyList;
+import ph.appdev.grocerylistapp.model.User;
+
 public class LogInActivity extends AppCompatActivity {
     DBHelper dbHelper;
     ConstraintLayout cllogin;
@@ -69,11 +72,11 @@ public class LogInActivity extends AppCompatActivity {
         }
         else {
             cursor.moveToFirst();
-            if (!pass.equals(cursor.getString(cursor.getColumnIndex("password")))){
+            if (!pass.equals(cursor.getString(cursor.getColumnIndex(User.PASSWORD)))){
                 et_password.setError("Wrong password");
             }
             else {
-                SavedSharedPreference.setLoggedIn(getApplicationContext(), true);
+                SavedSharedPreference.setLoggedIn(getApplicationContext(), true, email);
                 Intent logintent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(logintent);
                 finish();

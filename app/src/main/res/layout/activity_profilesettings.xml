@@ -120,7 +120,7 @@
         android:background="@drawable/border"
         app:layout_constraintTop_toBottomOf="@+id/user_email"
         android:layout_margin="@dimen/margin_padding_size_large"
-        android:hint="Password"
+        android:hint="New Password"
         android:inputType="textPassword"
         android:gravity="center"
         android:padding="@dimen/margin_padding_size_small"/>
@@ -134,8 +134,8 @@
         app:layout_constraintTop_toTopOf="@id/user_password"
         app:layout_constraintBottom_toBottomOf="@id/user_password"
         app:layout_constraintEnd_toEndOf="@id/user_password"
-        android:layout_marginEnd="@dimen/margin_padding_size_small"
-        android:layout_marginRight="@dimen/margin_padding_size_small"/>
+        android:layout_marginEnd="@dimen/margin_padding_size_large"
+        android:layout_marginRight="@dimen/margin_padding_size_large"/>
 
     <EditText
         android:id="@+id/user_confirm_password"
@@ -146,7 +146,7 @@
         android:background="@drawable/border"
         app:layout_constraintTop_toBottomOf="@+id/user_password"
         android:layout_margin="@dimen/margin_padding_size_large"
-        android:hint="Confirm Password"
+        android:hint="Confirm New Password"
         android:inputType="textPassword"
         android:gravity="center"
         android:padding="@dimen/margin_padding_size_small"/>
@@ -160,8 +160,8 @@
         app:layout_constraintTop_toTopOf="@id/user_confirm_password"
         app:layout_constraintBottom_toBottomOf="@id/user_confirm_password"
         app:layout_constraintEnd_toEndOf="@id/user_confirm_password"
-        android:layout_marginEnd="@dimen/margin_padding_size_small"
-        android:layout_marginRight="@dimen/margin_padding_size_small"/>
+        android:layout_marginEnd="@dimen/margin_padding_size_large"
+        android:layout_marginRight="@dimen/margin_padding_size_large"/>
 
     <EditText
         android:id="@+id/user_budget"
@@ -173,7 +173,7 @@
         app:layout_constraintTop_toBottomOf="@+id/user_confirm_password"
         android:layout_margin="@dimen/margin_padding_size_large"
         android:hint="Budget"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:gravity="center"
         android:padding="@dimen/margin_padding_size_small"/>
 
@@ -190,7 +190,24 @@
         android:onClick="editProfile"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_budget"/>
+        app:layout_constraintTop_toBottomOf="@id/user_budget"
+        />
+
+    <Button
+        android:id="@+id/save_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:textColor="@android:color/white"
+        android:background="@drawable/gradient_loginbtn"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="@dimen/margin_padding_size_large"
+        android:layout_marginEnd="20dp"
+        android:onClick="saveChanges"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_budget"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/logoutbtn"
@@ -206,5 +223,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_profile" />
+
+    <Button
+        android:id="@+id/cancelbtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CANCEL"
+        android:textColor="@android:color/white"
+        android:background="@drawable/gradient_loginbtn"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="@dimen/margin_padding_size_large"
+        android:layout_marginEnd="20dp"
+        android:onClick="cancelEdit"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/save_profile"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
