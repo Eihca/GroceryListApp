@@ -22,12 +22,16 @@ import ph.appdev.grocerylistapp.adapter.RecyclerAdapter;
 import ph.appdev.grocerylistapp.model.Adtnlist;
 import ph.appdev.grocerylistapp.model.Checklist;
 
-public class CheckListActivity extends AppCompatActivity {
+public class CheckListActivity extends AppCompatActivity implements ChecklistAdapter.TotalListener{
     private static final int ITEMS_DIALOG = 1;
     private static final int ADTNL_DIALOG = 2;
+    private int selectedItem;
+    private double itemstotal;
+    private double adtnltotal;
+    private double finaltotal;
     DBHelper dbHelper;
     EditText title, notes;
-    TextView timestamp;
+    TextView timestamp, itemstotalprice, totalprice;
     RecyclerView rvChecklist, rvAdtnllist;
     ArrayList<Checklist> checklists = new ArrayList();
     ArrayList<Adtnlist> adtnlists = new ArrayList();
@@ -45,6 +49,8 @@ public class CheckListActivity extends AppCompatActivity {
         notes = findViewById(R.id.list_notes);
         rvChecklist = findViewById(R.id.rvlistitems);
         rvAdtnllist = findViewById(R.id.rvaddtnlinfo);
+        itemstotalprice = findViewById(R.id.itemstotalprice);
+        totalprice = findViewById(R.id.totalprice);
 
         if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("edit")){
             title.setText(getIntent().getStringExtra("title"));
@@ -54,7 +60,7 @@ public class CheckListActivity extends AppCompatActivity {
             adtnlists = dbHelper.getUserMyListAdtnlists(getIntent().getStringExtra("title"));
         }
 
-        cadapter = new ChecklistAdapter(this, checklists);
+        cadapter = new ChecklistAdapter(this, checklists, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         rvChecklist.setLayoutManager(layoutManager);
         rvChecklist.setItemAnimator(new DefaultItemAnimator());
@@ -67,6 +73,10 @@ public class CheckListActivity extends AppCompatActivity {
         rvAdtnllist.setItemAnimator(new DefaultItemAnimator());
         /*        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));*/
         rvAdtnllist.setAdapter(aadapter);
+
+        adtnltotal = getTotalAmount();
+        finaltotal = itemstotal + adtnltotal;
+        totalprice.setText(String.valueOf(finaltotal));
 
     }
 
@@ -93,25 +103,73 @@ public class CheckListActivity extends AppCompatActivity {
 
     }
 
+    public double getTotalAmount(){
+        double totalamount = 0;
+        for (Adtnlist item : adtnlists){
+            if(item.getisChecked() == 1){
+                if(item.getCategory().equals("tax")){
+                    totalamount = totalamount + item.getAmount();
+                }
+                else{
+                    totalamount = totalamount - item.getAmount();
+                }
+            }
+        }
+        return totalamount;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        double price_per_item, amount_per_info;
+        Bundle bundle = data.getExtras();
+        price_per_item = bundle.getDouble("unit_price", 0.0) * bundle.getInt("quantity", 0);
+        amount_per_info = (bundle.getDouble("value", 0.0)/100) * itemstotal;
+
         if(requestCode == ITEMS_DIALOG){
-            if(requestCode == Activity.RESULT_OK){
-
+            if(resultCode == Activity.RESULT_OK){
+                if(bundle != null){
+                    if(bundle.getString("action").equals("edit")){
+                        checklists.set(selectedItem, new Checklist(bundle.getString("name"), bundle.getDouble("unit_price", 0.0), 0, price_per_item, bundle.getInt("quantity", 0)));
+                    }
+                    else{
+                        checklists.add(0, new Checklist(bundle.getString("name"), bundle.getDouble("unit_price", 0.0), 0, price_per_item, bundle.getInt("quantity", 0)));
+                    }
+                    cadapter.notifyDataSetChanged();
+                }
+                else{
+                    //Nothing Happens
+                }
             }
-            else{
+            else {
+                if(resultCode == Activity.RESULT_OK){
+                    if(bundle != null){
+                        if(bundle.getString("action").equals("edit")){
+                            adtnlists.set(selectedItem, new Adtnlist(bundle.getString("category"), bundle.getString("name"), bundle.getDouble("value", 0.0), 0, amount_per_info));
+                        }
+                        else{
+                            adtnlists.add(0, new Adtnlist(bundle.getString("category"), bundle.getString("name"), bundle.getDouble("value", 0.0), 0, amount_per_info));
+                        }
+                        aadapter.notifyDataSetChanged();
+                    }
+                    else{
+                        //Nothing Happens
+                    }
 
+                }
             }
         }
-        else {
-            if(requestCode == Activity.RESULT_OK){
+    }
 
-            }
-            else{
+    @Override
+    public void onTotalUpdate(double total) {
+        itemstotalprice.setText(""+total);
+        this.itemstotal = total;
+    }
 
-            }
-        }
+    @Override
+    public void onSelectedItemUpdate(int selecteditem) {
+        this.selectedItem = selecteditem;
     }
 }

@@ -5,11 +5,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Objects;
+
+import ph.appdev.grocerylistapp.model.Checklist;
 
 public class ItemsDialog extends AppCompatActivity {
     DBHelper dbHelper;
@@ -27,12 +30,14 @@ public class ItemsDialog extends AppCompatActivity {
         name = findViewById(R.id.itemname);
         unit_price = findViewById(R.id.itemprice);
         quantity = findViewById(R.id.quantity);
+        quantity.setText("1");
 
-        int gotIntent = getIntent().getIntExtra("checklist_id", 0);
+        Checklist gotIntent = getIntent().getExtras().getParcelable("listobj");
         if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("edit")){
-            name.setText(dbHelper.getChecklist(gotIntent).getName());
-            unit_price.setText(String.valueOf(dbHelper.getChecklist(gotIntent).getUnitPrice()));
-            quantity.setText(String.valueOf(dbHelper.getChecklist(gotIntent).getQuantity()));
+            addorsave.setText("SAVE");
+            name.setText(gotIntent.getName());
+            unit_price.setText(String.valueOf(gotIntent.getUnitPrice()));
+            quantity.setText(String.valueOf(gotIntent.getQuantity()));
         }
 
 
@@ -41,7 +46,16 @@ public class ItemsDialog extends AppCompatActivity {
     public void backtoChecklist(View view){
         Intent resultIntent = new Intent();
         resultIntent.putExtra("action", getIntent().getStringExtra("action"));
-        setResult(RESULT_OK, resultIntent);
+        if(view.getId() == R.id.closedialog){
+            setResult(RESULT_CANCELED, resultIntent);
+        }
+        else{
+            Toast.makeText(getApplicationContext(), unit_price.getText().toString(), Toast.LENGTH_SHORT).show();
+            resultIntent.putExtra("name", name.getText().toString());
+            resultIntent.putExtra("unit_price", Double.parseDouble(unit_price.getText().toString()));
+            resultIntent.putExtra("quantity", Integer.parseInt(quantity.getText().toString()));
+            setResult(RESULT_OK, resultIntent);
+        }
         finish();
     }
 

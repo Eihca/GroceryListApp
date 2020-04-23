@@ -1,6 +1,9 @@
 package ph.appdev.grocerylistapp.model;
 
-public class Checklist {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Checklist implements Parcelable {
     public static final String TBL_NAME= "checklist_table";
     public static final String ID = "id";
     public static final String ITEM_NAME = "item_name";
@@ -37,6 +40,43 @@ public class Checklist {
         this.price = price;
         this.quantity = quantity;
     }
+
+    public Checklist (String name, Double unit_price, int isChecked, Double price, int quantity){
+        this.name = name;
+        this.unit_price = unit_price;
+        this.isChecked = isChecked;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    protected Checklist(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        if (in.readByte() == 0) {
+            unit_price = null;
+        } else {
+            unit_price = in.readDouble();
+        }
+        isChecked = in.readInt();
+        if (in.readByte() == 0) {
+            price = null;
+        } else {
+            price = in.readDouble();
+        }
+        quantity = in.readInt();
+    }
+
+    public static final Creator<Checklist> CREATOR = new Creator<Checklist>() {
+        @Override
+        public Checklist createFromParcel(Parcel in) {
+            return new Checklist(in);
+        }
+
+        @Override
+        public Checklist[] newArray(int size) {
+            return new Checklist[size];
+        }
+    };
 
     public int getId(){
         return id;
@@ -84,5 +124,30 @@ public class Checklist {
 
     public void setQuantity (int quantity){
         this.quantity =  quantity;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        if (unit_price == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(unit_price);
+        }
+        dest.writeInt(isChecked);
+        if (price == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(price);
+        }
+        dest.writeInt(quantity);
     }
 }

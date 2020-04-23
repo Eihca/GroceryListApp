@@ -71,7 +71,7 @@ public class AdtnllistAdapter extends RecyclerView.Adapter<AdtnllistAdapter.MyVi
             @Override
             public void onClick(View v) {
                 Intent gotoAddtnlInfoDialog = new Intent(context, AddtnlInfoDialog.class);
-                gotoAddtnlInfoDialog.putExtra("adtnlist_id", list.getId());
+                gotoAddtnlInfoDialog.putExtra("listobj", list);
                 gotoAddtnlInfoDialog.putExtra("action", "edit");
                 context.startActivity(gotoAddtnlInfoDialog);
             }

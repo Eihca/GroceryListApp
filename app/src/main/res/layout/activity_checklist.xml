@@ -159,28 +159,28 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/border"
                     android:paddingTop="@dimen/margin_padding_size_large"
-                    android:paddingBottom="@dimen/margin_padding_size_xxlarge"
                     android:minHeight="80dp"/>
 
-                <Button
-                    android:id="@+id/additembtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Add an item"
-                    android:onClick="openDialog"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/gradient_bg"
-                    android:layout_alignBottom="@id/rvlistitems"
-                    android:layout_marginTop="@dimen/margin_padding_size_large"/>
-
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/additembtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Add an item"
+                android:onClick="openDialog"
+                android:textColor="@android:color/white"
+                android:background="@drawable/gradient_bg"
+                app:layout_constraintStart_toStartOf="@id/rllistitems"
+                app:layout_constraintEnd_toEndOf="@id/rllistitems"
+                app:layout_constraintTop_toBottomOf="@id/rllistitems"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clitemtotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rllistitems"
+                app:layout_constraintTop_toBottomOf="@id/additembtn"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <TextView
@@ -229,7 +229,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/clitemtotal"
                 app:layout_constraintEnd_toEndOf="@id/list_title"
                 android:layout_marginTop="@dimen/margin_padding_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="@dimen/margin_padding_size_small">
 
                 <TextView
@@ -254,17 +253,21 @@
                     android:paddingBottom="@dimen/margin_padding_size_xxlarge"
                     android:minHeight="80dp"/>
 
-                <Button
-                    android:id="@+id/addaddtnlinfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/gradient_bg"
-                    android:textColor="@android:color/white"
-                    android:onClick="openDialog"
-                    android:text="Add Additional Info"
-                    android:layout_alignBottom="@id/rvaddtnlinfo"/>
-
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/addaddtnlinfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gradient_bg"
+                android:textColor="@android:color/white"
+                android:onClick="openDialog"
+                android:text="Add Additional Info"
+                app:layout_constraintStart_toStartOf="@id/rladdtnlinfo"
+                app:layout_constraintEnd_toEndOf="@id/rladdtnlinfo"
+                app:layout_constraintTop_toBottomOf="@id/rladdtnlinfo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

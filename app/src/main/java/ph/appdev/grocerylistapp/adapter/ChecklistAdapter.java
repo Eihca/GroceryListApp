@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import ph.appdev.grocerylistapp.CheckListActivity;
 import ph.appdev.grocerylistapp.ItemsDialog;
@@ -27,13 +30,49 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
 
     private Context context;
     private ArrayList<Checklist> lists;
+    TotalListener totalListener;
+    private int selectedItem = -1;
+
+    public interface TotalListener {
+        void onTotalUpdate(double total);
+        void onSelectedItemUpdate(int selecteditem);
+    }
+
+    public void getSelectedItem(){
+        totalListener.onSelectedItemUpdate(selectedItem);
+    }
+
+    public void getTotalUpdate(){
+        double total = 0;
+        Iterator<Checklist> itr = lists.iterator();
+        while (itr.hasNext()) {
+            Checklist item = itr.next();
+            if(item.getisChecked() == 1){
+                total = total + item.getPrice();
+            }
+        }
+        totalListener.onTotalUpdate(total);
+    }
+
+    public void getFirstTotal(){
+        double total = 0;
+        Iterator<Checklist> itr = lists.iterator();
+        while (itr.hasNext()) {
+            Checklist item = itr.next();
+            if(item.getisChecked() == 1){
+                total = total + item.getPrice();
+            }
+        }
+        totalListener.onTotalUpdate(total);
+    }
+
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, unit_price, price;
         public CheckBox isChecked;
         public EditText quantity;
-        private Button btninc, btndec;
+        private ImageView btninc, btndec;
 
         public MyViewHolder(View view) {
             super(view);
@@ -48,9 +87,10 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
     }
 
 
-    public ChecklistAdapter(Context context, ArrayList<Checklist> lists) {
+    public ChecklistAdapter(Context context, ArrayList<Checklist> lists, TotalListener totalListener ) {
         this.context = context;
         this.lists = lists;
+        this.totalListener = totalListener;
     }
 
     @Override
@@ -62,7 +102,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Checklist list = lists.get(position);
 
         holder.name.setText(list.getName());
@@ -71,10 +111,26 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
         holder.price.setText(String.valueOf(list.getPrice()));
 
         if(list.getisChecked() == 1){
-            holder.isChecked.isChecked();
+            holder.isChecked.setChecked(true);
+            Toast.makeText(context, "added", Toast.LENGTH_SHORT).show();
         }
 
-        holder.quantity.setText(list.getQuantity());
+        holder.isChecked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(list.getisChecked() == 1){
+                    holder.isChecked.setChecked(false);
+                    list.setisChecked(0);
+                }else{
+                    holder.isChecked.setChecked(true);
+                    list.setisChecked(1);
+                }
+                notifyDataSetChanged();
+                getTotalUpdate();
+            }
+        });
+
+        holder.quantity.setText(String.valueOf(list.getQuantity()));
         holder.price.setText(String.valueOf(list.getPrice()));
 
         holder.btndec.setOnClickListener(new View.OnClickListener() {
@@ -102,8 +158,11 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                selectedItem = position;
+                notifyDataSetChanged();
+                getSelectedItem();
                 Intent gotoItemsDialog = new Intent(context, ItemsDialog.class);
-                gotoItemsDialog.putExtra("checklist_id", list.getId());
+                gotoItemsDialog.putExtra("listobj", list);
                 gotoItemsDialog.putExtra("action", "edit");
                 context.startActivity(gotoItemsDialog);
             }

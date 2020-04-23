@@ -1,6 +1,9 @@
 package ph.appdev.grocerylistapp.model;
 
-public class Adtnlist {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Adtnlist implements Parcelable {
     public static final String TBL_NAME= "adtnlist_table";
     public static final String ID = "id";
     public static final String INFO_CAT = "category";
@@ -34,6 +37,44 @@ public class Adtnlist {
         this.isChecked = isChecked;
         this.value = amount;
     }
+
+    public Adtnlist (String category, String name, Double value, int isChecked, Double amount){
+        this.category = category;
+        this.name = name;
+        this.value = value;
+        this.isChecked = isChecked;
+        this.value = amount;
+    }
+
+    protected Adtnlist(Parcel in) {
+        id = in.readInt();
+        category = in.readString();
+        name = in.readString();
+        if (in.readByte() == 0) {
+            value = null;
+        } else {
+            value = in.readDouble();
+        }
+        isChecked = in.readInt();
+        if (in.readByte() == 0) {
+            amount = null;
+        } else {
+            amount = in.readDouble();
+        }
+    }
+
+    public static final Creator<Adtnlist> CREATOR = new Creator<Adtnlist>() {
+        @Override
+        public Adtnlist createFromParcel(Parcel in) {
+            return new Adtnlist(in);
+        }
+
+        @Override
+        public Adtnlist[] newArray(int size) {
+            return new Adtnlist[size];
+        }
+    };
+
     public int getId(){
         return id;
     }
@@ -70,5 +111,30 @@ public class Adtnlist {
     }
     public void setAmount (Double amount){
         this.amount  = amount;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(category);
+        dest.writeString(name);
+        if (value == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(value);
+        }
+        dest.writeInt(isChecked);
+        if (amount == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(amount);
+        }
     }
 }
