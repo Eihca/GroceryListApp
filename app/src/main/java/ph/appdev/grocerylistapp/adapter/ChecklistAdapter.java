@@ -1,5 +1,6 @@
 package ph.appdev.grocerylistapp.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -54,7 +55,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
         totalListener.onTotalUpdate(total);
     }
 
-    public void getFirstTotal(){
+    public double returnTotal(){
         double total = 0;
         Iterator<Checklist> itr = lists.iterator();
         while (itr.hasNext()) {
@@ -63,7 +64,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 total = total + item.getPrice();
             }
         }
-        totalListener.onTotalUpdate(total);
+        return total;
     }
 
 
@@ -112,7 +113,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
 
         if(list.getisChecked() == 1){
             holder.isChecked.setChecked(true);
-            Toast.makeText(context, "added", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "added", Toast.LENGTH_SHORT).show();
         }
 
         holder.isChecked.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +143,9 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
 
                 }else{
                     holder.quantity.setText(Integer.toString(quant));
+                    list.setQuantity(quant);
+                    list.setPrice(quant*list.getUnitPrice());
+                    notifyDataSetChanged();
                 }
             }
         });
@@ -152,6 +156,9 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 int quant = Integer.parseInt(holder.quantity.getText().toString());
                 quant = quant + 1;
                 holder.quantity.setText(Integer.toString(quant));
+                list.setQuantity(quant);
+                list.setPrice(quant*list.getUnitPrice());
+                notifyDataSetChanged();
             }
         });
 
@@ -159,12 +166,15 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
             @Override
             public void onClick(View v) {
                 selectedItem = position;
+/*
+                Toast.makeText(context, String.valueOf(selectedItem), Toast.LENGTH_SHORT).show();
+*/
                 notifyDataSetChanged();
                 getSelectedItem();
                 Intent gotoItemsDialog = new Intent(context, ItemsDialog.class);
                 gotoItemsDialog.putExtra("listobj", list);
                 gotoItemsDialog.putExtra("action", "edit");
-                context.startActivity(gotoItemsDialog);
+                ((Activity) context).startActivityForResult(gotoItemsDialog, 1);
             }
         });
     }

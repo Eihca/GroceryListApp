@@ -3,9 +3,11 @@ package ph.appdev.grocerylistapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -131,14 +133,21 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
             if(resultCode == Activity.RESULT_OK){
                 if(bundle != null){
                     if(bundle.getString("action").equals("edit")){
-                        checklists.set(selectedItem, new Checklist(bundle.getString("name"), bundle.getDouble("unit_price", 0.0), 0, price_per_item, bundle.getInt("quantity", 0)));
+                        Toast.makeText(getApplicationContext(), "position:" +String.valueOf(selectedItem), Toast.LENGTH_SHORT).show();
+                        Checklist tempchklist = bundle.getParcelable("modlistobj");
+                        checklists.set(selectedItem, tempchklist);
+
                     }
                     else{
-                        checklists.add(0, new Checklist(bundle.getString("name"), bundle.getDouble("unit_price", 0.0), 0, price_per_item, bundle.getInt("quantity", 0)));
+                        checklists.add(new Checklist(bundle.getString("name"), bundle.getDouble("unit_price", 0.0), 0, price_per_item, bundle.getInt("quantity", 0)));
                     }
+
                     cadapter.notifyDataSetChanged();
+                    itemstotalprice.setText(String.valueOf(cadapter.returnTotal()));
                 }
                 else{
+                    Toast.makeText(getApplicationContext(), "position:" +String.valueOf(selectedItem), Toast.LENGTH_SHORT).show();
+
                     //Nothing Happens
                 }
             }
@@ -149,7 +158,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                             adtnlists.set(selectedItem, new Adtnlist(bundle.getString("category"), bundle.getString("name"), bundle.getDouble("value", 0.0), 0, amount_per_info));
                         }
                         else{
-                            adtnlists.add(0, new Adtnlist(bundle.getString("category"), bundle.getString("name"), bundle.getDouble("value", 0.0), 0, amount_per_info));
+                            adtnlists.add(new Adtnlist(bundle.getString("category"), bundle.getString("name"), bundle.getDouble("value", 0.0), 0, amount_per_info));
                         }
                         aadapter.notifyDataSetChanged();
                     }

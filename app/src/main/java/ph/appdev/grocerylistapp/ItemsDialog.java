@@ -18,6 +18,7 @@ public class ItemsDialog extends AppCompatActivity {
     DBHelper dbHelper;
     Button addorsave, cancel;
     EditText name, unit_price, quantity;
+    Checklist gotIntent;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +33,7 @@ public class ItemsDialog extends AppCompatActivity {
         quantity = findViewById(R.id.quantity);
         quantity.setText("1");
 
-        Checklist gotIntent = getIntent().getExtras().getParcelable("listobj");
+        gotIntent = getIntent().getExtras().getParcelable("listobj");
         if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("edit")){
             addorsave.setText("SAVE");
             name.setText(gotIntent.getName());
@@ -50,10 +51,18 @@ public class ItemsDialog extends AppCompatActivity {
             setResult(RESULT_CANCELED, resultIntent);
         }
         else{
-            Toast.makeText(getApplicationContext(), unit_price.getText().toString(), Toast.LENGTH_SHORT).show();
-            resultIntent.putExtra("name", name.getText().toString());
-            resultIntent.putExtra("unit_price", Double.parseDouble(unit_price.getText().toString()));
-            resultIntent.putExtra("quantity", Integer.parseInt(quantity.getText().toString()));
+            if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("add")) {
+                resultIntent.putExtra("name", name.getText().toString());
+                resultIntent.putExtra("unit_price", Double.parseDouble(unit_price.getText().toString()));
+                resultIntent.putExtra("quantity", Integer.parseInt(quantity.getText().toString()));
+            }
+            else {
+                gotIntent.setName(name.getText().toString());
+                gotIntent.setUnitPrice(Double.parseDouble(unit_price.getText().toString()));
+                gotIntent.setQuantity(Integer.parseInt(quantity.getText().toString()));
+                gotIntent.setPrice(gotIntent.getUnitPrice() * gotIntent.getQuantity());
+                resultIntent.putExtra("modlistobj", gotIntent);
+            }
             setResult(RESULT_OK, resultIntent);
         }
         finish();
