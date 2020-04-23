@@ -62,7 +62,7 @@
         app:layout_constraintGuide_percent=".5"/>
 
     <Button
-        android:id="@+id/canceledit"
+        android:id="@+id/closedialog"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +76,7 @@
         android:textColor="@android:color/white"/>
 
     <Button
-        android:id="@+id/iaddorsave"
+        android:id="@+id/addorsave"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/guideline"

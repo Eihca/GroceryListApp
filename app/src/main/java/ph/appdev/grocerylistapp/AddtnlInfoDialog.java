@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,7 @@ public class AddtnlInfoDialog extends AppCompatActivity {
     Button addorsave, cancel;
     EditText name, value;
     Spinner category;
+    Adtnlist gotIntent = new Adtnlist();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,8 +34,9 @@ public class AddtnlInfoDialog extends AppCompatActivity {
         value = findViewById(R.id.infovalue);
         category = findViewById(R.id.infocategory);
 
-        Adtnlist gotIntent = getIntent().getExtras().getParcelable("listobj");
+
         if (Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("edit")) {
+            gotIntent = getIntent().getExtras().getParcelable("listobj");
             addorsave.setText("SAVE");
             name.setText(gotIntent.getName());
             value.setText(String.valueOf(gotIntent.getValue()));
@@ -47,9 +50,13 @@ public class AddtnlInfoDialog extends AppCompatActivity {
         if (view.getId() == R.id.closedialog) {
             setResult(RESULT_CANCELED, resultIntent);
         } else {
-            resultIntent.putExtra("category", "tax");
-            resultIntent.putExtra("name", name.getText().toString());
-            resultIntent.putExtra("value", value.getText().toString());
+            gotIntent.setCategory("tax");
+            gotIntent.setName(name.getText().toString());
+            gotIntent.setValue(Double.parseDouble(value.getText().toString()));
+            if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("add")){
+                gotIntent.setisChecked(0);
+            }
+            resultIntent.putExtra("adtnlistobj", gotIntent);
             setResult(RESULT_OK, resultIntent);
         }
         finish();

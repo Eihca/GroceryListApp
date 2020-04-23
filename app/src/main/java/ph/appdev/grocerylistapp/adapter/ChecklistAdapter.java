@@ -146,6 +146,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                     list.setQuantity(quant);
                     list.setPrice(quant*list.getUnitPrice());
                     notifyDataSetChanged();
+                    getTotalUpdate();
                 }
             }
         });
@@ -159,6 +160,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 list.setQuantity(quant);
                 list.setPrice(quant*list.getUnitPrice());
                 notifyDataSetChanged();
+                getTotalUpdate();
             }
         });
 

@@ -28,9 +28,9 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     private static final int ITEMS_DIALOG = 1;
     private static final int ADTNL_DIALOG = 2;
     private int selectedItem;
-    private double itemstotal;
-    private double adtnltotal;
-    private double finaltotal;
+    private double itemstotal = 0;
+    private double adtnltotal = 0;
+    private double finaltotal = 0;
     DBHelper dbHelper;
     EditText title, notes;
     TextView timestamp, itemstotalprice, totalprice;
@@ -129,46 +129,43 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         price_per_item = bundle.getDouble("unit_price", 0.0) * bundle.getInt("quantity", 0);
         amount_per_info = (bundle.getDouble("value", 0.0)/100) * itemstotal;
 
-        if(requestCode == ITEMS_DIALOG){
+
             if(resultCode == Activity.RESULT_OK){
                 if(bundle != null){
-                    if(bundle.getString("action").equals("edit")){
-                        Toast.makeText(getApplicationContext(), "position:" +String.valueOf(selectedItem), Toast.LENGTH_SHORT).show();
-                        Checklist tempchklist = bundle.getParcelable("modlistobj");
-                        checklists.set(selectedItem, tempchklist);
-
-                    }
-                    else{
-                        checklists.add(new Checklist(bundle.getString("name"), bundle.getDouble("unit_price", 0.0), 0, price_per_item, bundle.getInt("quantity", 0)));
-                    }
-
-                    cadapter.notifyDataSetChanged();
-                    itemstotalprice.setText(String.valueOf(cadapter.returnTotal()));
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "position:" +String.valueOf(selectedItem), Toast.LENGTH_SHORT).show();
-
-                    //Nothing Happens
-                }
-            }
-            else {
-                if(resultCode == Activity.RESULT_OK){
-                    if(bundle != null){
+                    if(requestCode == ITEMS_DIALOG){
                         if(bundle.getString("action").equals("edit")){
-                            adtnlists.set(selectedItem, new Adtnlist(bundle.getString("category"), bundle.getString("name"), bundle.getDouble("value", 0.0), 0, amount_per_info));
+                            Checklist tempchklist = bundle.getParcelable("modlistobj");
+                            checklists.set(selectedItem, tempchklist);
+
                         }
                         else{
-                            adtnlists.add(new Adtnlist(bundle.getString("category"), bundle.getString("name"), bundle.getDouble("value", 0.0), 0, amount_per_info));
+                            checklists.add(new Checklist(bundle.getString("name"), bundle.getDouble("unit_price", 0.0), 0, price_per_item, bundle.getInt("quantity", 0)));
+                        }
+                        cadapter.notifyDataSetChanged();
+                        itemstotalprice.setText(String.valueOf(cadapter.returnTotal()));
+                        itemstotal = cadapter.returnTotal();
+                        totalprice.setText(String.valueOf(getFinalPrice()));
+                    }
+                    else{
+                        Adtnlist tempadtnlist = bundle.getParcelable("adtnlistobj");
+                        tempadtnlist.setAmount((tempadtnlist.getValue()/100) * Double.parseDouble(itemstotalprice.getText().toString()));
+                        if(bundle.getString("action").equals("edit")){
+                            adtnlists.set(selectedItem, tempadtnlist);
+                        }
+                        else{
+                            adtnlists.add(tempadtnlist);
+                            Toast.makeText(getApplicationContext(), "addedtoadtn", Toast.LENGTH_SHORT).show();
                         }
                         aadapter.notifyDataSetChanged();
                     }
-                    else{
-                        //Nothing Happens
-                    }
-
                 }
             }
-        }
+    }
+
+    private double getFinalPrice() {
+        double finalprice;
+        finalprice = itemstotal + adtnltotal;
+        return finalprice;
     }
 
     @Override

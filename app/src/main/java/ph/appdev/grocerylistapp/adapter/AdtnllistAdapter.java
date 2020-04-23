@@ -1,5 +1,6 @@
 package ph.appdev.grocerylistapp.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -73,7 +74,7 @@ public class AdtnllistAdapter extends RecyclerView.Adapter<AdtnllistAdapter.MyVi
                 Intent gotoAddtnlInfoDialog = new Intent(context, AddtnlInfoDialog.class);
                 gotoAddtnlInfoDialog.putExtra("listobj", list);
                 gotoAddtnlInfoDialog.putExtra("action", "edit");
-                context.startActivity(gotoAddtnlInfoDialog);
+                ((Activity) context).startActivityForResult(gotoAddtnlInfoDialog, 2);
             }
         });
     }
