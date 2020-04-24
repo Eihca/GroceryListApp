@@ -124,12 +124,16 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
             }
         }));
 
+        updateValueofViewsOutsideRV();
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void updateValueofViewsOutsideRV(){
         itemstotal = cadapter.returnTotal();
         adtnltotal = getTotalAmount();
         itemstotalprice.setText(String.format("%.2f",cadapter.returnTotal()));
-        adtntotalprice.setText(String.format("%.2f", aadapter.returnTotal()));
+        adtntotalprice.setText("- " + String.format("%.2f", aadapter.returnTotal()));
         totalprice.setText(String.format("%.2f",getFinalPrice()));
-
     }
 
     private boolean validateTitle() {
@@ -169,17 +173,14 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
             }
             checklists.remove(position);
             cadapter.notifyItemRemoved(position);
-
-
         }else {
             if(adtnlists.get(position).getId()>0){
                 tobedeletedal.add(adtnlists.get(position).getId());
             }
             adtnlists.remove(position);
             aadapter.notifyItemRemoved(position);
-
-
         }
+        updateValueofViewsOutsideRV();
     }
 
     public void backtoMain(View view){
@@ -297,9 +298,10 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
             info.setAmount(Double.parseDouble(df.format((info.getValue() / 100) * itemstotal)));
         }
         aadapter.notifyDataSetChanged();
-        this.adtnltotal = aadapter.returnTotal();
+/*        this.adtnltotal = aadapter.returnTotal();
         adtntotalprice.setText(String.valueOf(adtnltotal));
-        totalprice.setText(String.format("%.2f",getFinalPrice()));
+        totalprice.setText(String.format("%.2f",getFinalPrice()));*/
+        updateValueofViewsOutsideRV();
     }
 
     @SuppressLint("DefaultLocale")
@@ -315,18 +317,14 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                         Checklist tempchklist = bundle.getParcelable("modlistobj");
                         if(bundle.getString("action").equals("edit")){
                             checklists.set(selectedItem, tempchklist);
-
                         }
                         else{
                             checklists.add(tempchklist);
-
                         }
                         Log.d("price", Double.toString(tempchklist.getPrice()));
                         cadapter.notifyDataSetChanged();
-                        itemstotalprice.setText(String.format("%.2f", cadapter.returnTotal()));
-                        itemstotal = cadapter.returnTotal();
-
-
+/*                        itemstotalprice.setText(String.format("%.2f", cadapter.returnTotal()));
+                        itemstotal = cadapter.returnTotal();*/
                     }
                     else{
                         Adtnlist tempadtnlist = bundle.getParcelable("adtnlistobj");
@@ -339,10 +337,12 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                             adtnlists.add(tempadtnlist);
                         }
                         aadapter.notifyDataSetChanged();
-                        adtntotalprice.setText(String.format("%.2f",aadapter.returnTotal()));
-                        adtnltotal = aadapter.returnTotal();
+/*                        adtntotalprice.setText(String.format("%.2f",aadapter.returnTotal()));
+                        adtnltotal = aadapter.returnTotal();*/
                     }
-                    totalprice.setText(String.format("%.2f",getFinalPrice()));
+//                    totalprice.setText(String.format("%.2f",getFinalPrice()));
+
+                    updateValueofViewsOutsideRV();
                     updateAmountPerInfo();
                 }
             }
@@ -358,10 +358,11 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     @Override
     public void onTotalUpdate(double total) {
       /*  itemstotalprice.setText(""+total);*/
-        itemstotalprice.setText(String.format("%.2f",cadapter.returnTotal()));
+/*        itemstotalprice.setText(String.format("%.2f",cadapter.returnTotal()));
         this.itemstotal = cadapter.returnTotal();
         totalprice.setText(String.format("%.2f", getFinalPrice()));
-        this.finaltotal = getFinalPrice();
+        this.finaltotal = getFinalPrice();*/
+        updateValueofViewsOutsideRV();
         updateAmountPerInfo();
         /*this.itemstotal = total;*/
     }
@@ -375,10 +376,11 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     @Override
     public void onTotalAmountUpdate(double totalamount) {
 /*        adtntotalprice.setText(""+totalamount);*/
-        adtntotalprice.setText(String.format("%.2f", aadapter.returnTotal()));
+/*        adtntotalprice.setText(String.format("%.2f", aadapter.returnTotal()));
         adtnltotal = aadapter.returnTotal();
         totalprice.setText(String.format("%.2f", getFinalPrice()));
-        this.finaltotal = getFinalPrice();
+        this.finaltotal = getFinalPrice();*/
+        updateValueofViewsOutsideRV();
         /*this.adtnltotal = totalamount;*/
 
     }

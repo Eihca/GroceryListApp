@@ -206,9 +206,10 @@
 
                 <TextView
                     android:id="@+id/itemstotalprice"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="0.00"
+                    android:textAlignment="textEnd"
                     android:textStyle="bold"
                     android:textAllCaps="true"
                     android:textSize="@dimen/text_size_large"
@@ -217,7 +218,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_margin="@dimen/text_size_small"/>
+                    android:layout_margin="@dimen/text_size_small"
+                    android:gravity="end" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -244,13 +246,13 @@
                     android:layout_margin="@dimen/margin_padding_size_small"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:layout_marginTop="25dp"
                     android:id="@+id/rvaddtnlinfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
                     android:background="@drawable/border"
-                    android:paddingTop="@dimen/margin_padding_size_large"
-                    android:minHeight="80dp"/>
+                    android:minHeight="80dp"
+                    android:paddingTop="@dimen/margin_padding_size_large" />
 
             </RelativeLayout>
 
@@ -300,9 +302,10 @@
 
                 <TextView
                     android:id="@+id/adtnltotalprice"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="0.00"
+                    android:textAlignment="textEnd"
                     android:textStyle="bold"
                     android:textAllCaps="true"
                     android:textSize="@dimen/text_size_large"
@@ -311,7 +314,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_margin="@dimen/text_size_small"/>
+                    android:layout_margin="@dimen/text_size_small"
+                    android:gravity="end" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
