@@ -1,6 +1,8 @@
 package ph.appdev.grocerylistapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -60,10 +62,37 @@ public class MainActivity extends AppCompatActivity {
 /*        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));*/
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this,
+                recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                showActionsDialog(position, "rvchecklist");
+            }
+        }));
 
         toggleEmptyNotes();
     }
 
+    private void showActionsDialog(final int position, final String fromwhere) {
+        CharSequence colors[] = new CharSequence[]{"Delete"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose option");
+        builder.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dbHelper.deleteMyList(myLists.get(position));
+                dbHelper.deleteUserMyList(myLists.get(position).getId());
+                myLists.remove(position);
+                adapter.notifyItemRemoved(position);
+            }
+        });
+        builder.show();
+    }
 
     public void gotoProfileSettings(View view){
         Intent gotoProfSet = new Intent(getApplicationContext(), ProfileSettings.class);

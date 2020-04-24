@@ -205,7 +205,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public void deleteUserMyList(MyList mylist) {
+    public void deleteMyList(MyList mylist) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // before deleting user’s mylist, check if should delete all is true
@@ -224,6 +224,16 @@ public class DBHelper extends SQLiteOpenHelper {
             // delete adtnlist
             deleteAdtnlist(adtnlist.getId());
         }
+
+        db.delete(MyList.TBL_MYLIST, MyList.ID + " = ?",
+                new String[] { String.valueOf(mylist.getId()) });
+
+        db.delete(TBL_MYCHECKLIST, MYLIST_ID + " = ?",
+                new String[] { String.valueOf(mylist.getId()) });
+
+        db.delete(TBL_MYADTNLIST, MYLIST_ID + " = ?",
+                new String[] { String.valueOf(mylist.getId()) });
+
     }
 
 
@@ -255,6 +265,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // return newly inserted row id
         return id;
+    }
+
+    public void deleteUserMyList(long mylist_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TBL_USERMYLIST, MYLIST_ID + " = ?",
+                new String[] { String.valueOf(mylist_id) });
     }
 
     public long insertChecklist(String name, Double unit_price, int isChecked, Double price, int quantity) {
