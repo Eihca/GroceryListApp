@@ -171,7 +171,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList< MyList> mylists = new ArrayList<>();
 
         SQLiteDatabase db = this.getWritableDatabase();
-        String usermlistsQuery = "SELECT * FROM " + TBL_USERMYLIST + " tum, " +  User.TBL_USER + " tu, " +  MyList.TBL_MYLIST + " tml  WHERE tu." +  User.EMAIL + " = '" + email  +  "' AND tu."  + User.ID + " = tum." + USER_ID + " AND tml." + MyList.ID + " =  tum." +  MYLIST_ID;
+        String usermlistsQuery = "SELECT * FROM " + TBL_USERMYLIST + " tum, " +  User.TBL_USER + " tu, " +  MyList.TBL_MYLIST + " tml  WHERE tu." +  User.EMAIL + " = '" + email  +  "' AND tu."  + User.ID + " = tum." + USER_ID + " AND tml." + MyList.ID + " =  tum." +  MYLIST_ID + " ORDER BY " + MyList.TIMESTAMP + " DESC";
         Cursor cursor = db.rawQuery(usermlistsQuery, null);
 
         if (cursor.moveToFirst()) {
@@ -233,6 +233,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(MyList.TITLE, mylist.getTitle());
         values.put(MyList.NOTE, mylist.getNote());
+        values.put(MyList.TIMESTAMP, mylist.getTimestamp());
 
         // updating row
         return db.update(MyList.TBL_MYLIST, values, MyList.ID + " = ?",

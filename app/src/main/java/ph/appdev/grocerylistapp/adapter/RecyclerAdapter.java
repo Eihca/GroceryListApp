@@ -1,5 +1,6 @@
 package ph.appdev.grocerylistapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -64,8 +65,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 gotoChecklist.putExtra("action", "edit");
                 gotoChecklist.putExtra("title", mylist.getTitle());
                 gotoChecklist.putExtra("notes", mylist.getNote());
+                gotoChecklist.putExtra("lastmodified", mylist.getTimestamp());
                 gotoChecklist.putExtra("mylist_id", mylist.getId());
-                ((Activity) context).startActivityForResult(gotoChecklist, 1);
+                gotoChecklist.putExtra("mylistobj", mylist);
+                /*((Activity) context).startActivityForResult(gotoChecklist, 1);*/
+                gotoChecklist.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(gotoChecklist);
             }
         });
 
@@ -83,9 +88,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
      */
     private String formatDate(String dateStr) {
         try {
-            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = fmt.parse(dateStr);
-            SimpleDateFormat fmtOut = new SimpleDateFormat("MMM d");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat fmtOut = new SimpleDateFormat("HH:mm MMM d");
             return fmtOut.format(date);
         } catch (ParseException e) {
 

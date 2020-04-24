@@ -17,8 +17,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 import ph.appdev.grocerylistapp.adapter.AdtnllistAdapter;
@@ -37,6 +40,9 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     private double itemstotal = 0;
     private double adtnltotal = 0;
     private double finaltotal = 0;
+    private Calendar calendar;
+    private String date;
+    private SimpleDateFormat customdateformat;
     DBHelper dbHelper;
     EditText title, notes;
     TextView timestamp, itemstotalprice, adtntotalprice, totalprice;
@@ -112,10 +118,15 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     public void saveMyList(View view){
-        Intent backtoMain = new Intent();
+        Intent backtoMain = new Intent(this, MainActivity.class);
         String addoredit = getIntent().getStringExtra("action");
         long itemid, mylistid, infoid, newmylistid;
+
+        Bundle bundle = getIntent().getExtras();
+        assert bundle != null;
+
         if (addoredit.equals("edit")){
             mylistid = getIntent().getIntExtra("mylist_id", 0);
             for (Checklist item : checklists){
@@ -135,6 +146,18 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                 }
             }
 
+            MyList myList = bundle.getParcelable("mylistobj");
+            myList.setTitle(title.getText().toString());
+            myList.setNote(notes.getText().toString());
+
+            calendar = Calendar.getInstance();
+            customdateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            date = customdateformat.format(calendar.getTime());
+
+            myList.setTimestamp(date);
+            dbHelper.updateMList(myList);
+//            backtoMain.putExtra("action", "save");
+
         }
         else {
             //new list
@@ -153,11 +176,17 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                 newmylistid = dbHelper.insertUserMylists(cursor.getInt(cursor.getColumnIndex(User.ID)), mylistid);
                 MyList newmylist = new MyList();
                 dbHelper.getMyList(newmylistid);
-                backtoMain.putExtra("newmylistobj", newmylist);
+//                backtoMain.putExtra("newmylistobj", newmylist);
+
             }
+//            setResult(RESULT_OK, backtoMain);
+//            backtoMain.putExtra("action", "add");
         }
-        setResult(RESULT_OK, backtoMain);
+
+        startActivity(backtoMain);
         finish();
+
+
     }
 
     public double getTotalAmount(){

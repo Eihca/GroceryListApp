@@ -6,9 +6,11 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import ph.appdev.grocerylistapp.adapter.RecyclerAdapter;
 import ph.appdev.grocerylistapp.model.MyList;
@@ -72,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
         gotoChecklist.putExtra("logged_user", email);
         gotoChecklist.putExtra("budget", budget);
         gotoChecklist.putExtra("action", "add");
-        startActivityForResult(gotoChecklist, 1);
+        gotoChecklist.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(gotoChecklist);
+        /*startActivityForResult(gotoChecklist, 1);*/
     }
 
     private void toggleEmptyNotes() {
@@ -88,12 +93,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK){
-            MyList myList = data.getExtras().getParcelable("newmylistobj");
-            if(myList != null){
-                myLists.add(myList);
-                adapter.notifyDataSetChanged();
-            }
+            Bundle bundle = data.getExtras();
+            if(bundle != null){
+                if (bundle.getString("action") == "add") {
+                    MyList myList = bundle.getParcelable("newmylistobj");
+                    if(myList != null){
+                        myLists.add(myList);
+                        Log.d("time", myList.getTimestamp());
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+                else {
 
+                }
+
+            }
         }
     }
 }
