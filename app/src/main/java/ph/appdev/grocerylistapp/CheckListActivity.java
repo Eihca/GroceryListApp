@@ -107,7 +107,26 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     }
 
     public void saveMyList(View view){
+        String addoredit = getIntent().getStringExtra("action");
+        if (addoredit.equals("edit")){
 
+        }
+        else {
+            //new list
+            for (Checklist item : checklists){
+                long itemid;
+                itemid = dbHelper.insertChecklist(item.getName(), item.getUnitPrice(), item.getisChecked(), item.getPrice(), item.getQuantity());
+                //register to mychecklist table
+            }
+            for (Adtnlist info: adtnlists){
+                long infoid;
+                infoid = dbHelper.insertAdtnlist(info.getCategory(), info.getName(), info.getValue(),info.getAmount(), info.getisChecked());
+                //register to myadtnlist table
+            }
+            dbHelper.insertMList(title.getText().toString(), notes.getText().toString());
+            //register to usermylist table
+        }
+        finish();
     }
 
     public double getTotalAmount(){

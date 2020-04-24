@@ -310,7 +310,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(checklist_id) });
     }
 
-    public long insertAdtnlist(long user_id, long mylist_id, String category, String name, Double value, Double amount, int isChecked) {
+    public long insertAdtnlist(String category, String name, Double value, Double amount, int isChecked) {
         // get writable database as we want to write data
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -322,7 +322,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(Adtnlist.INFO_AMOUNT, amount);
         values.put(Adtnlist.IS_CHECKED, isChecked);
 
-        long id = db.insert(Checklist.TBL_NAME, null, values);
+        long id = db.insert(Adtnlist.TBL_NAME, null, values);
 
         // close db connection
         db.close();
