@@ -1,5 +1,6 @@
 package ph.appdev.grocerylistapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
     private ArrayList<Checklist> lists;
     TotalListener totalListener;
     private int selectedItem = -1;
+    DecimalFormat df = new DecimalFormat("#.##");
 
     public interface TotalListener {
         void onTotalUpdate(double total);
@@ -52,6 +55,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 total = total + item.getPrice();
             }
         }
+        total = Double.parseDouble(df.format(total));
         totalListener.onTotalUpdate(total);
     }
 
@@ -64,6 +68,8 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 total = total + item.getPrice();
             }
         }
+        total = Double.parseDouble(df.format(total));
+
         return total;
     }
 
@@ -102,6 +108,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
         return new MyViewHolder(itemView);
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Checklist list = lists.get(position);
@@ -109,11 +116,9 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
         holder.name.setText(list.getName());
         // Formatting and displaying timestamp
         holder.unit_price.setText(String.valueOf(list.getUnitPrice()));
-        holder.price.setText(String.valueOf(list.getPrice()));
 
         if(list.getisChecked() == 1){
             holder.isChecked.setChecked(true);
-//            Toast.makeText(context, "added", Toast.LENGTH_SHORT).show();
         }
 
         holder.isChecked.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +137,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
         });
 
         holder.quantity.setText(String.valueOf(list.getQuantity()));
-        holder.price.setText(String.valueOf(list.getPrice()));
+        holder.price.setText(String.format("%.2f",list.getPrice()));
 
         holder.btndec.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,9 +173,6 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
             @Override
             public void onClick(View v) {
                 selectedItem = position;
-/*
-                Toast.makeText(context, String.valueOf(selectedItem), Toast.LENGTH_SHORT).show();
-*/
                 notifyDataSetChanged();
                 getSelectedItem();
                 Intent gotoItemsDialog = new Intent(context, ItemsDialog.class);
