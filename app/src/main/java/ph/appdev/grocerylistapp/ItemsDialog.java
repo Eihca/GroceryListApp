@@ -55,6 +55,15 @@ public class ItemsDialog extends AppCompatActivity {
             setResult(RESULT_CANCELED, resultIntent);
         }
         else{
+            if(!validateEditText(name)){
+                return;
+            }
+            if (!validateEditText(unit_price)){
+                return;
+            }
+            if (!validateEditText(quantity)){
+                return;
+            }
             gotIntent.setName(name.getText().toString());
             gotIntent.setUnitPrice(Double.valueOf(df.format(Double.parseDouble(unit_price.getText().toString()))));
             Log.d("price", Double.toString(gotIntent.getUnitPrice()));
@@ -68,6 +77,17 @@ public class ItemsDialog extends AppCompatActivity {
             setResult(RESULT_OK, resultIntent);
         }
         finish();
+    }
+
+    private boolean validateEditText(EditText editText) {
+        if (editText.getText().toString().isEmpty()) {
+            editText.setError("This is required.");
+            editText.requestFocus();
+            return false;
+        } else {
+            editText.setError(null);
+        }
+        return true;
     }
 
     public void decQuant(View view){

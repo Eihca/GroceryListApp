@@ -26,6 +26,7 @@ import ph.appdev.grocerylistapp.adapter.ChecklistAdapter;
 import ph.appdev.grocerylistapp.adapter.RecyclerAdapter;
 import ph.appdev.grocerylistapp.model.Adtnlist;
 import ph.appdev.grocerylistapp.model.Checklist;
+import ph.appdev.grocerylistapp.model.MyList;
 import ph.appdev.grocerylistapp.model.User;
 
 public class CheckListActivity extends AppCompatActivity implements ChecklistAdapter.TotalListener, AdtnllistAdapter.TotalListener{
@@ -45,6 +46,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     ChecklistAdapter cadapter;
     AdtnllistAdapter aadapter;
     DecimalFormat df = new DecimalFormat("#.##");
+    @SuppressLint("DefaultLocale")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,9 +85,11 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         /*        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));*/
         rvAdtnllist.setAdapter(aadapter);
 
+        itemstotal = cadapter.returnTotal();
         adtnltotal = getTotalAmount();
-        finaltotal = itemstotal + adtnltotal;
-        totalprice.setText(String.format("%.2f",finaltotal));
+        itemstotalprice.setText(String.format("%.2f",cadapter.returnTotal()));
+        adtntotalprice.setText(String.format("%.2f", aadapter.returnTotal()));
+        totalprice.setText(String.format("%.2f",getFinalPrice()));
 
     }
 
@@ -109,29 +113,50 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     }
 
     public void saveMyList(View view){
+        Intent backtoMain = new Intent();
         String addoredit = getIntent().getStringExtra("action");
+        long itemid, mylistid, infoid, newmylistid;
         if (addoredit.equals("edit")){
+            mylistid = getIntent().getIntExtra("mylist_id", 0);
+            for (Checklist item : checklists){
+                if(item.getId() > 0){
+                    dbHelper.updateChecklist(item);
+                }else {
+                    itemid = dbHelper.insertChecklist(item.getName(), item.getUnitPrice(), item.getisChecked(), item.getPrice(), item.getQuantity());
+                    dbHelper.insertMyChecklists(mylistid, itemid);
+                }
+            }
+            for (Adtnlist info: adtnlists){
+                if(info.getId() > 0){
+                    dbHelper.updateAdtnlist(info);
+                }else {
+                    infoid = dbHelper.insertAdtnlist(info.getCategory(), info.getName(), info.getValue(), info.getAmount(),  info.getisChecked());
+                    dbHelper.insertMyAdtnlists(mylistid, infoid);
+                }
+            }
 
         }
         else {
             //new list
-            long itemid, mylistid;
             mylistid = dbHelper.insertMList(title.getText().toString(), notes.getText().toString());
             for (Checklist item : checklists){
                 itemid = dbHelper.insertChecklist(item.getName(), item.getUnitPrice(), item.getisChecked(), item.getPrice(), item.getQuantity());
                 dbHelper.insertMyChecklists(mylistid, itemid);
             }
             for (Adtnlist info: adtnlists){
-                long infoid;
                 infoid = dbHelper.insertAdtnlist(info.getCategory(), info.getName(), info.getValue(),info.getAmount(), info.getisChecked());
                 dbHelper.insertMyAdtnlists(mylistid, infoid);
             }
             Cursor cursor = dbHelper.getUser(getIntent().getStringExtra("logged_user"));
             if(cursor.getCount() != 0){
                 cursor.moveToFirst();
-                dbHelper.insertUserMylists(cursor.getInt(cursor.getColumnIndex(User.ID)), mylistid);
+                newmylistid = dbHelper.insertUserMylists(cursor.getInt(cursor.getColumnIndex(User.ID)), mylistid);
+                MyList newmylist = new MyList();
+                dbHelper.getMyList(newmylistid);
+                backtoMain.putExtra("newmylistobj", newmylist);
             }
         }
+        setResult(RESULT_OK, backtoMain);
         finish();
     }
 

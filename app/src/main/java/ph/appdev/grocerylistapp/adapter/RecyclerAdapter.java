@@ -1,5 +1,6 @@
 package ph.appdev.grocerylistapp.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -62,8 +63,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 Intent gotoChecklist = new Intent(context, CheckListActivity.class);
                 gotoChecklist.putExtra("action", "edit");
                 gotoChecklist.putExtra("title", mylist.getTitle());
+                gotoChecklist.putExtra("notes", mylist.getNote());
                 gotoChecklist.putExtra("mylist_id", mylist.getId());
-                context.startActivity(gotoChecklist);
+                ((Activity) context).startActivityForResult(gotoChecklist, 1);
             }
         });
 

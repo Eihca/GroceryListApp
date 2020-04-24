@@ -1,5 +1,6 @@
 package ph.appdev.grocerylistapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 /*        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));*/
         recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
         toggleEmptyNotes();
     }
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         gotoChecklist.putExtra("logged_user", email);
         gotoChecklist.putExtra("budget", budget);
         gotoChecklist.putExtra("action", "add");
-        startActivity(gotoChecklist);
+        startActivityForResult(gotoChecklist, 1);
     }
 
     private void toggleEmptyNotes() {
@@ -82,4 +84,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK){
+            MyList myList = data.getExtras().getParcelable("newmylistobj");
+            if(myList != null){
+                myLists.add(myList);
+                adapter.notifyDataSetChanged();
+            }
+
+        }
+    }
 }

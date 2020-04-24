@@ -147,8 +147,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // get readable database as we are not inserting anything
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String mlistQuery = "SELECT  * FROM " + MyList.TBL_MYLIST + " WHERE "
-                + MyList.ID + " = " + mylist_id;
+        String mlistQuery = "SELECT * FROM " + MyList.TBL_MYLIST + " WHERE " + MyList.ID + " = " + mylist_id;
         Cursor cursor = db.rawQuery(mlistQuery, null);
 
         if (cursor != null)
@@ -306,6 +305,20 @@ public class DBHelper extends SQLiteOpenHelper {
         return checklist;
     }
 
+    public int updateChecklist(Checklist checklist) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Checklist.ITEM_NAME, checklist.getName());
+        values.put(Checklist.ITEM_UNIT_PRICE, checklist.getUnitPrice());
+        values.put(Checklist.IS_CHECKED, checklist.getisChecked());
+        values.put(Checklist.ITEM_PRICE, checklist.getPrice());
+        values.put(Checklist.QUANTITY, checklist.getQuantity());
+        // updating row
+        return db.update(Checklist.TBL_NAME, values, Checklist.ID + " = ?",
+                new String[]{String.valueOf(checklist.getId())});
+    }
+
     public long insertMyChecklists(long mylist_id, long checklist_id){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -325,7 +338,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ArrayList<Checklist> getUserMyListChecklists(String mylist_title) {
         ArrayList<Checklist> checklists = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TBL_MYCHECKLIST + " tmc, " +  MyList.TBL_MYLIST + " tml, " +  Checklist.TBL_NAME + " tc  WHERE tml." + MyList.TITLE  + " = " + mylist_title +  " AND tml."  +  MyList.ID + " = tmc." + MYLIST_ID + " AND tc." + Checklist.ID + " =  tmc." +  CHECKLIST_ID;
+        String selectQuery = "SELECT * FROM " + TBL_MYCHECKLIST + " tmc, " +  MyList.TBL_MYLIST + " tml, " +  Checklist.TBL_NAME + " tc  WHERE tml." + MyList.TITLE  + " = '" + mylist_title +  "' AND tml."  +  MyList.ID + " = tmc." + MYLIST_ID + " AND tc." + Checklist.ID + " =  tmc." +  CHECKLIST_ID;
 
         Log.e(LOG, selectQuery);
 
@@ -403,6 +416,21 @@ public class DBHelper extends SQLiteOpenHelper {
         return adtnlist;
     }
 
+    public int updateAdtnlist(Adtnlist adtnlist) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Adtnlist.INFO_CAT, adtnlist.getCategory());
+        values.put(Adtnlist.INFO_NAME, adtnlist.getName());
+        values.put(Adtnlist.INFO_VALUE, adtnlist.getValue());
+        values.put(Adtnlist.INFO_AMOUNT, adtnlist.getAmount());
+        values.put(Adtnlist.IS_CHECKED, adtnlist.getisChecked());
+
+        // updating row
+        return db.update(Adtnlist.TBL_NAME, values, Adtnlist.ID + " = ?",
+                new String[]{String.valueOf(adtnlist.getId())});
+    }
+
     public long insertMyAdtnlists(long mylist_id, long adtnlist_id){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -422,7 +450,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ArrayList<Adtnlist> getUserMyListAdtnlists(String mylist_title) {
         ArrayList<Adtnlist> adtnlists = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + TBL_MYADTNLIST + " tma, " +  MyList.TBL_MYLIST + " tml  " +  Adtnlist.TBL_NAME + " ta  WHERE tml." + MyList.TITLE  + " = " + mylist_title +  " AND tml."  +  ID + " = tmc." + MYLIST_ID + " AND ta." + ID + " =  tma." +  ADTNLIST_ID;
+        String selectQuery = "SELECT * FROM " + TBL_MYADTNLIST + " tma, " +  MyList.TBL_MYLIST + " tml, " +  Adtnlist.TBL_NAME + " ta  WHERE tml." + MyList.TITLE  + " = '" + mylist_title +  "' AND tml."  +  MyList.ID + " = tma." + MYLIST_ID + " AND ta." + Adtnlist.ID + " =  tma." +  ADTNLIST_ID;
 
         Log.e(LOG, selectQuery);
 

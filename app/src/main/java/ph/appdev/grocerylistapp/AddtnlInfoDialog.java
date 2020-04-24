@@ -52,6 +52,15 @@ public class AddtnlInfoDialog extends AppCompatActivity {
         if (view.getId() == R.id.closedialog) {
             setResult(RESULT_CANCELED, resultIntent);
         } else {
+            if(!validateEditText(name)){
+                return;
+            }
+            if (!validateEditText(value)){
+                return;
+            }
+    /*        if (!validateEditText(category)){
+                return;
+            }*/
             gotIntent.setCategory("tax");
             gotIntent.setName(name.getText().toString());
             gotIntent.setValue(Double.parseDouble(df.format(Double.parseDouble(value.getText().toString()))));
@@ -62,6 +71,17 @@ public class AddtnlInfoDialog extends AppCompatActivity {
             setResult(RESULT_OK, resultIntent);
         }
         finish();
+    }
+
+    private boolean validateEditText(EditText editText) {
+        if (editText.getText().toString().isEmpty()) {
+            editText.setError("This is required.");
+            editText.requestFocus();
+            return false;
+        } else {
+            editText.setError(null);
+        }
+        return true;
     }
 
 }
