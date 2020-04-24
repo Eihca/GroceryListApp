@@ -146,7 +146,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
 
     public void updateAmountPerInfo(){
         for (Adtnlist info: adtnlists){
-            info.setAmount((info.getValue() / 100) * itemstotal);
+            info.setAmount(Double.parseDouble(df.format((info.getValue() / 100) * itemstotal)));
         }
         aadapter.notifyDataSetChanged();
         this.adtnltotal = aadapter.returnTotal();
@@ -159,32 +159,28 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        double price_per_item;
         Bundle bundle = data.getExtras();
-        price_per_item = bundle.getDouble("unit_price", 0.0) * bundle.getInt("quantity", 0);
-        price_per_item = Double.parseDouble(df.format(price_per_item));
-
 
             if(resultCode == Activity.RESULT_OK){
                 if(bundle != null){
                     if(requestCode == ITEMS_DIALOG){
+                        Checklist tempchklist = bundle.getParcelable("modlistobj");
                         if(bundle.getString("action").equals("edit")){
-                            Checklist tempchklist = bundle.getParcelable("modlistobj");
                             checklists.set(selectedItem, tempchklist);
 
                         }
                         else{
-                            checklists.add(new Checklist(bundle.getString("name"), bundle.getDouble("unit_price", 0.0), 0, price_per_item, bundle.getInt("quantity", 0)));
+                            checklists.add(tempchklist);
                         }
                         cadapter.notifyDataSetChanged();
                         itemstotalprice.setText(String.format("%.2f", cadapter.returnTotal()));
                         itemstotal = cadapter.returnTotal();
-                        updateAmountPerInfo();
+
 
                     }
                     else{
                         Adtnlist tempadtnlist = bundle.getParcelable("adtnlistobj");
-                        double amount_per_info = Double.parseDouble(df.format(tempadtnlist.getValue()/100)) * itemstotal;
+                        double amount_per_info = Double.parseDouble(df.format((tempadtnlist.getValue()/100) * itemstotal));
                         tempadtnlist.setAmount(amount_per_info);
                         if(bundle.getString("action").equals("edit")){
                             adtnlists.set(selectedInfo, tempadtnlist);
@@ -196,7 +192,8 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                         adtntotalprice.setText(String.format("%.2f",aadapter.returnTotal()));
                         adtnltotal = aadapter.returnTotal();
                     }
-                    totalprice.setText(String.format("%.2f", getFinalPrice()));
+                    totalprice.setText(String.valueOf(getFinalPrice()));
+                    updateAmountPerInfo();
                 }
             }
     }
@@ -213,8 +210,8 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
       /*  itemstotalprice.setText(""+total);*/
         itemstotalprice.setText(String.format("%.2f",cadapter.returnTotal()));
         this.itemstotal = cadapter.returnTotal();
-        totalprice.setText(String.format("%.2f", getFinalPrice()));
-        this.finaltotal = Double.parseDouble(df.format(Double.parseDouble(totalprice.getText().toString())));
+        totalprice.setText(String.valueOf(getFinalPrice()));
+        this.finaltotal = getFinalPrice();
         updateAmountPerInfo();
         /*this.itemstotal = total;*/
     }
@@ -230,8 +227,8 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
 /*        adtntotalprice.setText(""+totalamount);*/
         adtntotalprice.setText(String.format("%.2f", aadapter.returnTotal()));
         adtnltotal = aadapter.returnTotal();
-        totalprice.setText(String.format("%.2f", getFinalPrice()));
-        this.finaltotal = Double.parseDouble(df.format(Double.parseDouble(totalprice.getText().toString())));
+        totalprice.setText(String.valueOf(getFinalPrice()));
+        this.finaltotal = getFinalPrice();
         /*this.adtnltotal = totalamount;*/
 
     }

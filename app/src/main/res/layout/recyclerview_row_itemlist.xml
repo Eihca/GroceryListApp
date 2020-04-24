@@ -83,6 +83,7 @@
             app:layout_constraintTop_toBottomOf="@+id/btninc"
             app:layout_constraintBottom_toTopOf="@+id/btndec"
             android:hint="0"
+            android:editable="false"
             android:background="@android:color/transparent"
             android:inputType="number"
             android:gravity="center"/>

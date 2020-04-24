@@ -106,7 +106,7 @@ public class AdtnllistAdapter extends RecyclerView.Adapter<AdtnllistAdapter.MyVi
         holder.name.setText(list.getName());
         holder.category.setText(list.getCategory());
         holder.value.setText(String.valueOf(list.getValue()));
-        holder.amount.setText(String.format("%.2f", list.getAmount()));
+        holder.amount.setText(String.valueOf(list.getAmount()));
 
         if(list.getisChecked() == 1){
             holder.isChecked.setChecked(true);

@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
 
 import ph.appdev.grocerylistapp.model.Checklist;
@@ -18,7 +19,8 @@ public class ItemsDialog extends AppCompatActivity {
     DBHelper dbHelper;
     Button addorsave, cancel;
     EditText name, unit_price, quantity;
-    Checklist gotIntent;
+    Checklist gotIntent =  new Checklist();
+    DecimalFormat df = new DecimalFormat("#.##");
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +35,9 @@ public class ItemsDialog extends AppCompatActivity {
         quantity = findViewById(R.id.quantity);
         quantity.setText("1");
 
-        gotIntent = getIntent().getExtras().getParcelable("listobj");
+
         if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("edit")){
+            gotIntent = getIntent().getExtras().getParcelable("listobj");
             addorsave.setText("SAVE");
             name.setText(gotIntent.getName());
             unit_price.setText(String.valueOf(gotIntent.getUnitPrice()));
@@ -51,18 +54,15 @@ public class ItemsDialog extends AppCompatActivity {
             setResult(RESULT_CANCELED, resultIntent);
         }
         else{
+            gotIntent.setName(name.getText().toString());
+            gotIntent.setUnitPrice(Double.parseDouble(df.format(Double.parseDouble(unit_price.getText().toString()))));
+            gotIntent.setQuantity(Integer.parseInt(quantity.getText().toString()));
+            gotIntent.setPrice(gotIntent.getUnitPrice() * gotIntent.getQuantity());
             if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("add")) {
-                resultIntent.putExtra("name", name.getText().toString());
-                resultIntent.putExtra("unit_price", Double.parseDouble(unit_price.getText().toString()));
-                resultIntent.putExtra("quantity", Integer.parseInt(quantity.getText().toString()));
+                gotIntent.setisChecked(0);
             }
-            else {
-                gotIntent.setName(name.getText().toString());
-                gotIntent.setUnitPrice(Double.parseDouble(unit_price.getText().toString()));
-                gotIntent.setQuantity(Integer.parseInt(quantity.getText().toString()));
-                gotIntent.setPrice(gotIntent.getUnitPrice() * gotIntent.getQuantity());
-                resultIntent.putExtra("modlistobj", gotIntent);
-            }
+            resultIntent.putExtra("modlistobj", gotIntent);
+
             setResult(RESULT_OK, resultIntent);
         }
         finish();

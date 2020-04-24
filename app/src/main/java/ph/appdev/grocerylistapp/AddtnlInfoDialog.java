@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
 
 import ph.appdev.grocerylistapp.model.Adtnlist;
@@ -22,6 +23,7 @@ public class AddtnlInfoDialog extends AppCompatActivity {
     EditText name, value;
     Spinner category;
     Adtnlist gotIntent = new Adtnlist();
+    DecimalFormat df = new DecimalFormat("#.##");
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,7 @@ public class AddtnlInfoDialog extends AppCompatActivity {
         } else {
             gotIntent.setCategory("tax");
             gotIntent.setName(name.getText().toString());
-            gotIntent.setValue(Double.parseDouble(value.getText().toString()));
+            gotIntent.setValue(Double.parseDouble(df.format(Double.parseDouble(value.getText().toString()))));
             if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("add")){
                 gotIntent.setisChecked(0);
             }

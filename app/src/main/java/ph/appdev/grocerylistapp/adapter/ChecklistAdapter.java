@@ -55,7 +55,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 total = total + item.getPrice();
             }
         }
-        total = Double.parseDouble(df.format(total));
+//        total = Double.parseDouble(df.format(total));
         totalListener.onTotalUpdate(total);
     }
 
@@ -68,7 +68,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 total = total + item.getPrice();
             }
         }
-        total = Double.parseDouble(df.format(total));
+//        total = Double.parseDouble(df.format(total));
 
         return total;
     }
@@ -136,8 +136,9 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
             }
         });
 
+        holder.quantity.setKeyListener(null);
         holder.quantity.setText(String.valueOf(list.getQuantity()));
-        holder.price.setText(String.format("%.2f",list.getPrice()));
+        holder.price.setText(String.valueOf(list.getPrice()));
 
         holder.btndec.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +150,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 }else{
                     holder.quantity.setText(Integer.toString(quant));
                     list.setQuantity(quant);
-                    list.setPrice(quant*list.getUnitPrice());
+                    list.setPrice(quant * list.getUnitPrice());
                     notifyDataSetChanged();
                     getTotalUpdate();
                 }
