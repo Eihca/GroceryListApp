@@ -63,9 +63,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             public void onClick(View v) {
                 Intent gotoChecklist = new Intent(context, CheckListActivity.class);
                 gotoChecklist.putExtra("action", "edit");
-                gotoChecklist.putExtra("title", mylist.getTitle());
+     /*           gotoChecklist.putExtra("title", mylist.getTitle());
                 gotoChecklist.putExtra("notes", mylist.getNote());
-                gotoChecklist.putExtra("lastmodified", mylist.getTimestamp());
+                gotoChecklist.putExtra("lastmodified", mylist.getTimestamp());*/
                 gotoChecklist.putExtra("mylist_id", mylist.getId());
                 gotoChecklist.putExtra("mylistobj", mylist);
                 /*((Activity) context).startActivityForResult(gotoChecklist, 1);*/

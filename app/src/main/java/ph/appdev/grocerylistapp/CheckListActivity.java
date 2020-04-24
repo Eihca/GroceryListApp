@@ -2,9 +2,13 @@ package ph.appdev.grocerylistapp;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -52,6 +56,10 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     ChecklistAdapter cadapter;
     AdtnllistAdapter aadapter;
     DecimalFormat df = new DecimalFormat("#.##");
+    Bundle bundle = new Bundle();
+    MyList myList = new MyList();
+    ArrayList<Integer> tobedeletedcl = new ArrayList();
+    ArrayList<Integer> tobedeletedal = new ArrayList();
     @SuppressLint("DefaultLocale")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,12 +77,15 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         adtntotalprice = findViewById(R.id.adtnltotalprice);
         totalprice = findViewById(R.id.totalprice);
 
-        if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("edit")){
-            title.setText(getIntent().getStringExtra("title"));
-            timestamp.setText(getIntent().getStringExtra("lastmodified"));
-            notes.setText(getIntent().getStringExtra("notes"));
-            checklists = dbHelper.getUserMyListChecklists(getIntent().getStringExtra("title"));
-            adtnlists = dbHelper.getUserMyListAdtnlists(getIntent().getStringExtra("title"));
+        bundle = getIntent().getExtras();
+        assert bundle != null;
+        myList = bundle.getParcelable("mylistobj");
+        if(bundle.getString("action").toLowerCase().equals("edit")){
+            title.setText(myList.getTitle());
+            timestamp.setText(myList.getTimestamp());
+            notes.setText(bundle.getString("notes"));
+            checklists = dbHelper.getUserMyListChecklists(myList.getTitle());
+            adtnlists = dbHelper.getUserMyListAdtnlists(myList.getTitle());
         }
 
         cadapter = new ChecklistAdapter(this, checklists, this);
@@ -83,6 +94,17 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         rvChecklist.setItemAnimator(new DefaultItemAnimator());
         /*        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));*/
         rvChecklist.setAdapter(cadapter);
+        rvChecklist.addOnItemTouchListener(new RecyclerTouchListener(this,
+                rvChecklist, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                showActionsDialog(position, "rvchecklist");
+            }
+        }));
 
         aadapter = new AdtnllistAdapter(this, adtnlists, this);
         RecyclerView.LayoutManager alayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -90,6 +112,17 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         rvAdtnllist.setItemAnimator(new DefaultItemAnimator());
         /*        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));*/
         rvAdtnllist.setAdapter(aadapter);
+        rvAdtnllist.addOnItemTouchListener(new RecyclerTouchListener(this,
+                rvAdtnllist, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, final int position) {
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                showActionsDialog(position, "rvadtnlist");
+            }
+        }));
 
         itemstotal = cadapter.returnTotal();
         adtnltotal = getTotalAmount();
@@ -98,6 +131,57 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         totalprice.setText(String.format("%.2f",getFinalPrice()));
 
     }
+
+    private boolean validateTitle() {
+
+        if (title.getText().toString().isEmpty() || title.getText().toString().equals("")) {
+            title.setError("Enter a title");
+            title.requestFocus();
+            return false;
+        } else {
+            title.setError(null);
+        }
+        return true;
+    }
+
+    private void showActionsDialog(final int position, final String fromwhere) {
+        CharSequence colors[] = new CharSequence[]{"Delete"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose option");
+        builder.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(fromwhere.equals("rvchecklist")){
+                    deleteRow(position, "checklists");
+                }else {
+                    deleteRow(position, "adtnlists");
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void deleteRow(int position, String whatlist) {
+        if(whatlist.equals("checklists")){
+            if(checklists.get(position).getId()>0){
+                tobedeletedcl.add(checklists.get(position).getId());
+            }
+            checklists.remove(position);
+            cadapter.notifyItemRemoved(position);
+
+
+        }else {
+            if(adtnlists.get(position).getId()>0){
+                tobedeletedal.add(adtnlists.get(position).getId());
+            }
+            adtnlists.remove(position);
+            aadapter.notifyItemRemoved(position);
+
+
+        }
+    }
+
 
     public void backtoMain(View view){
         Intent tomain = new Intent();
@@ -121,14 +205,26 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     @SuppressLint("SimpleDateFormat")
     public void saveMyList(View view){
         Intent backtoMain = new Intent(this, MainActivity.class);
-        String addoredit = getIntent().getStringExtra("action");
         long itemid, mylistid, infoid, newmylistid;
 
-        Bundle bundle = getIntent().getExtras();
-        assert bundle != null;
+        if(!validateTitle()){
+            return;
+        }
 
+        assert bundle != null;
+        String addoredit = bundle.getString("action");
         if (addoredit.equals("edit")){
-            mylistid = getIntent().getIntExtra("mylist_id", 0);
+
+            for (int tbdclid: tobedeletedcl){
+                dbHelper.deleteChecklist(tbdclid);
+                dbHelper.deleteMyChecklist(tbdclid);
+            }
+            for (int tbdalid: tobedeletedal){
+                dbHelper.deleteAdtnlist(tbdalid);
+                dbHelper.deleteMyAdtnlist(tbdalid);
+            }
+
+            mylistid = bundle.getInt("mylist_id", 0);
             for (Checklist item : checklists){
                 if(item.getId() > 0){
                     dbHelper.updateChecklist(item);
@@ -145,8 +241,6 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                     dbHelper.insertMyAdtnlists(mylistid, infoid);
                 }
             }
-
-            MyList myList = bundle.getParcelable("mylistobj");
             myList.setTitle(title.getText().toString());
             myList.setNote(notes.getText().toString());
 
@@ -170,7 +264,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                 infoid = dbHelper.insertAdtnlist(info.getCategory(), info.getName(), info.getValue(),info.getAmount(), info.getisChecked());
                 dbHelper.insertMyAdtnlists(mylistid, infoid);
             }
-            Cursor cursor = dbHelper.getUser(getIntent().getStringExtra("logged_user"));
+            Cursor cursor = dbHelper.getUser(bundle.getString("logged_user"));
             if(cursor.getCount() != 0){
                 cursor.moveToFirst();
                 newmylistid = dbHelper.insertUserMylists(cursor.getInt(cursor.getColumnIndex(User.ID)), mylistid);

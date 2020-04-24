@@ -337,6 +337,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    public void deleteMyChecklist(long checklist_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TBL_MYCHECKLIST, CHECKLIST_ID + " = ?",
+                new String[] { String.valueOf(checklist_id) });
+    }
+
     public ArrayList<Checklist> getUserMyListChecklists(String mylist_title) {
         ArrayList<Checklist> checklists = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TBL_MYCHECKLIST + " tmc, " +  MyList.TBL_MYLIST + " tml, " +  Checklist.TBL_NAME + " tc  WHERE tml." + MyList.TITLE  + " = '" + mylist_title +  "' AND tml."  +  MyList.ID + " = tmc." + MYLIST_ID + " AND tc." + Checklist.ID + " =  tmc." +  CHECKLIST_ID;
@@ -366,7 +372,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
     public void deleteChecklist(long checklist_id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(Checklist.TBL_NAME, ID + " = ?",
+        db.delete(Checklist.TBL_NAME, Checklist.ID + " = ?",
                 new String[] { String.valueOf(checklist_id) });
     }
 
@@ -449,6 +455,12 @@ public class DBHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    public void deleteMyAdtnlist(long adtnlist_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TBL_MYADTNLIST, ADTNLIST_ID + " = ?",
+                new String[] { String.valueOf(adtnlist_id) });
+    }
+
     public ArrayList<Adtnlist> getUserMyListAdtnlists(String mylist_title) {
         ArrayList<Adtnlist> adtnlists = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TBL_MYADTNLIST + " tma, " +  MyList.TBL_MYLIST + " tml, " +  Adtnlist.TBL_NAME + " ta  WHERE tml." + MyList.TITLE  + " = '" + mylist_title +  "' AND tml."  +  MyList.ID + " = tma." + MYLIST_ID + " AND ta." + Adtnlist.ID + " =  tma." +  ADTNLIST_ID;
@@ -476,9 +488,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return adtnlists;
     }
-    public void deleteAdtnlist(long  adtnlist_id) {
+    public void deleteAdtnlist(long adtnlist_id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(Adtnlist.TBL_NAME, ID + " = ?",
+        db.delete(Adtnlist.TBL_NAME, Adtnlist.ID + " = ?",
                 new String[] { String.valueOf(adtnlist_id) });
     }
 
