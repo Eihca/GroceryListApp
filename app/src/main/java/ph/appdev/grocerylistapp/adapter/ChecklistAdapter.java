@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,7 +139,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
 
         holder.quantity.setKeyListener(null);
         holder.quantity.setText(String.valueOf(list.getQuantity()));
-        holder.price.setText(String.valueOf(list.getPrice()));
+        holder.price.setText(String.format("%.2f",list.getPrice()));
 
         holder.btndec.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +151,8 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 }else{
                     holder.quantity.setText(Integer.toString(quant));
                     list.setQuantity(quant);
-                    list.setPrice(quant * list.getUnitPrice());
+                    list.setPrice(Double.valueOf(df.format(quant * list.getUnitPrice())));
+                    Log.d("price", Double.toString(list.getPrice()));
                     notifyDataSetChanged();
                     getTotalUpdate();
                 }
@@ -164,7 +166,8 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 quant = quant + 1;
                 holder.quantity.setText(Integer.toString(quant));
                 list.setQuantity(quant);
-                list.setPrice(quant*list.getUnitPrice());
+                list.setPrice(Double.valueOf(df.format(quant*list.getUnitPrice())));
+                Log.d("price", Double.toString(list.getPrice()));
                 notifyDataSetChanged();
                 getTotalUpdate();
             }

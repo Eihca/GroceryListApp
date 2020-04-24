@@ -2,6 +2,7 @@ package ph.appdev.grocerylistapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +21,7 @@ public class ItemsDialog extends AppCompatActivity {
     Button addorsave, cancel;
     EditText name, unit_price, quantity;
     Checklist gotIntent =  new Checklist();
-    DecimalFormat df = new DecimalFormat("#.##");
+    DecimalFormat df = new DecimalFormat("0.00");
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +56,10 @@ public class ItemsDialog extends AppCompatActivity {
         }
         else{
             gotIntent.setName(name.getText().toString());
-            gotIntent.setUnitPrice(Double.parseDouble(df.format(Double.parseDouble(unit_price.getText().toString()))));
+            gotIntent.setUnitPrice(Double.valueOf(df.format(Double.parseDouble(unit_price.getText().toString()))));
+            Log.d("price", Double.toString(gotIntent.getUnitPrice()));
             gotIntent.setQuantity(Integer.parseInt(quantity.getText().toString()));
-            gotIntent.setPrice(gotIntent.getUnitPrice() * gotIntent.getQuantity());
+            gotIntent.setPrice(Double.valueOf(df.format(gotIntent.getUnitPrice() * gotIntent.getQuantity())));
             if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("add")) {
                 gotIntent.setisChecked(0);
             }

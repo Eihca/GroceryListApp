@@ -3,6 +3,7 @@ package ph.appdev.grocerylistapp;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,7 @@ import ph.appdev.grocerylistapp.adapter.ChecklistAdapter;
 import ph.appdev.grocerylistapp.adapter.RecyclerAdapter;
 import ph.appdev.grocerylistapp.model.Adtnlist;
 import ph.appdev.grocerylistapp.model.Checklist;
+import ph.appdev.grocerylistapp.model.User;
 
 public class CheckListActivity extends AppCompatActivity implements ChecklistAdapter.TotalListener, AdtnllistAdapter.TotalListener{
     private static final int ITEMS_DIALOG = 1;
@@ -83,7 +85,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
 
         adtnltotal = getTotalAmount();
         finaltotal = itemstotal + adtnltotal;
-        totalprice.setText(String.valueOf(finaltotal));
+        totalprice.setText(String.format("%.2f",finaltotal));
 
     }
 
@@ -113,18 +115,22 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         }
         else {
             //new list
+            long itemid, mylistid;
+            mylistid = dbHelper.insertMList(title.getText().toString(), notes.getText().toString());
             for (Checklist item : checklists){
-                long itemid;
                 itemid = dbHelper.insertChecklist(item.getName(), item.getUnitPrice(), item.getisChecked(), item.getPrice(), item.getQuantity());
-                //register to mychecklist table
+                dbHelper.insertMyChecklists(mylistid, itemid);
             }
             for (Adtnlist info: adtnlists){
                 long infoid;
                 infoid = dbHelper.insertAdtnlist(info.getCategory(), info.getName(), info.getValue(),info.getAmount(), info.getisChecked());
-                //register to myadtnlist table
+                dbHelper.insertMyAdtnlists(mylistid, infoid);
             }
-            dbHelper.insertMList(title.getText().toString(), notes.getText().toString());
-            //register to usermylist table
+            Cursor cursor = dbHelper.getUser(getIntent().getStringExtra("logged_user"));
+            if(cursor.getCount() != 0){
+                cursor.moveToFirst();
+                dbHelper.insertUserMylists(cursor.getInt(cursor.getColumnIndex(User.ID)), mylistid);
+            }
         }
         finish();
     }
@@ -151,7 +157,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         aadapter.notifyDataSetChanged();
         this.adtnltotal = aadapter.returnTotal();
         adtntotalprice.setText(String.valueOf(adtnltotal));
-        totalprice.setText(String.valueOf(getFinalPrice()));
+        totalprice.setText(String.format("%.2f",getFinalPrice()));
     }
 
     @SuppressLint("DefaultLocale")
@@ -171,7 +177,9 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                         }
                         else{
                             checklists.add(tempchklist);
+
                         }
+                        Log.d("price", Double.toString(tempchklist.getPrice()));
                         cadapter.notifyDataSetChanged();
                         itemstotalprice.setText(String.format("%.2f", cadapter.returnTotal()));
                         itemstotal = cadapter.returnTotal();
@@ -192,7 +200,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                         adtntotalprice.setText(String.format("%.2f",aadapter.returnTotal()));
                         adtnltotal = aadapter.returnTotal();
                     }
-                    totalprice.setText(String.valueOf(getFinalPrice()));
+                    totalprice.setText(String.format("%.2f",getFinalPrice()));
                     updateAmountPerInfo();
                 }
             }
@@ -210,7 +218,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
       /*  itemstotalprice.setText(""+total);*/
         itemstotalprice.setText(String.format("%.2f",cadapter.returnTotal()));
         this.itemstotal = cadapter.returnTotal();
-        totalprice.setText(String.valueOf(getFinalPrice()));
+        totalprice.setText(String.format("%.2f", getFinalPrice()));
         this.finaltotal = getFinalPrice();
         updateAmountPerInfo();
         /*this.itemstotal = total;*/
@@ -227,7 +235,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
 /*        adtntotalprice.setText(""+totalamount);*/
         adtntotalprice.setText(String.format("%.2f", aadapter.returnTotal()));
         adtnltotal = aadapter.returnTotal();
-        totalprice.setText(String.valueOf(getFinalPrice()));
+        totalprice.setText(String.format("%.2f", getFinalPrice()));
         this.finaltotal = getFinalPrice();
         /*this.adtnltotal = totalamount;*/
 

@@ -49,7 +49,7 @@
                         android:src="@drawable/ic_savechanges"
                         android:scaleType="centerCrop"
                         android:id="@+id/savemylist"
-                        android:onClick="saveMyLiswt"
+                        android:onClick="saveMyList"
                         android:tint="@android:color/white"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"/>

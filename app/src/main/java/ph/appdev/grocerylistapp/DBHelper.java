@@ -9,6 +9,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import ph.appdev.grocerylistapp.adapter.AdtnllistAdapter;
 import ph.appdev.grocerylistapp.model.Adtnlist;
 import ph.appdev.grocerylistapp.model.Checklist;
 import ph.appdev.grocerylistapp.model.MyList;
@@ -23,6 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private final static String TBL_MYCHECKLIST = "mychecklist_table";
     private final static String TBL_MYADTNLIST = "myadtnlist_table";
     private static final String ID = "usermylist_id";
+    private static final String IDORIG = "id";
     private static final String USER_ID = "user_id";
     private static final String MYLIST_ID = "mylist_id";
     private static final String CHECKLIST_ID = "checklist_id";
@@ -32,10 +34,10 @@ public class DBHelper extends SQLiteOpenHelper {
             + TBL_USERMYLIST + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + USER_ID + " INTEGER," + MYLIST_ID + " INTEGER)";
     private static final String CREATE_TABLE_MYCHECKLIST = "CREATE TABLE "
-            + TBL_MYCHECKLIST + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + TBL_MYCHECKLIST + "(" + IDORIG + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + MYLIST_ID + " INTEGER," + CHECKLIST_ID + " INTEGER)";
     private static final String CREATE_TABLE_MYADTNLIST = "CREATE TABLE "
-            + TBL_MYADTNLIST + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + TBL_MYADTNLIST + "(" + IDORIG + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + MYLIST_ID + " INTEGER," + ADTNLIST_ID + " INTEGER)";
 
     private static final String DROP_TABLE_USERMYLIST = "DROP TABLE IF EXISTS "  + TBL_USERMYLIST;
@@ -50,6 +52,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate (SQLiteDatabase db) {
         db.execSQL(User.CREATE_TBL_USER);
         db.execSQL(MyList.CREATE_TBL_MYLIST);
+        db.execSQL(Checklist.CREATE_TBL_NAME);
+        db.execSQL(Adtnlist.CREATE_TBL_NAME);
         db.execSQL(CREATE_TABLE_USERMYLIST);
         db.execSQL(CREATE_TABLE_MYCHECKLIST);
         db.execSQL(CREATE_TABLE_MYADTNLIST);
@@ -59,6 +63,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(User.DROP_TBL_USER);
         db.execSQL(MyList.DROP_TBL_MYLIST);
+        db.execSQL(Checklist.DROP_TBL_NAME);
+        db.execSQL(Adtnlist.DROP_TBL_NAME);
         db.execSQL(DROP_TABLE_USERMYLIST);
         db.execSQL(DROP_TABLE_MYCHECKLIST);
         db.execSQL(DROP_TABLE_MYADTNLIST);
@@ -70,10 +76,14 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(User.DROP_TBL_USER);
         db.execSQL(MyList.DROP_TBL_MYLIST);
         db.execSQL(DROP_TABLE_USERMYLIST);
+        db.execSQL(Checklist.DROP_TBL_NAME);
+        db.execSQL(Adtnlist.DROP_TBL_NAME);
         db.execSQL(DROP_TABLE_MYCHECKLIST);
         db.execSQL(DROP_TABLE_MYADTNLIST);
         db.execSQL(User.CREATE_TBL_USER);
         db.execSQL(MyList.CREATE_TBL_MYLIST);
+        db.execSQL(Checklist.CREATE_TBL_NAME);
+        db.execSQL(Adtnlist.CREATE_TBL_NAME);
         db.execSQL(CREATE_TABLE_USERMYLIST);
         db.execSQL(CREATE_TABLE_MYCHECKLIST);
         db.execSQL(CREATE_TABLE_MYADTNLIST);
@@ -230,6 +240,23 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(mylist.getId())});
     }
 
+    public long insertUserMylists(long user_id, long mylist_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // insert a new row
+        ContentValues values = new ContentValues();
+        values.put(USER_ID, user_id);
+        values.put(MYLIST_ID, mylist_id);
+
+        long id = db.insert(TBL_USERMYLIST, null, values);
+
+        // close db connection
+        db.close();
+
+        // return newly inserted row id
+        return id;
+    }
+
     public long insertChecklist(String name, Double unit_price, int isChecked, Double price, int quantity) {
         // get writable database as we want to write data
         SQLiteDatabase db = this.getWritableDatabase();
@@ -250,6 +277,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // return newly inserted row id
         return id;
     }
+
     public Checklist getChecklist (long checklist_id) {
         // get readable database as we are not inserting anything
         SQLiteDatabase db = this.getReadableDatabase();
@@ -277,6 +305,24 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return checklist;
     }
+
+    public long insertMyChecklists(long mylist_id, long checklist_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // insert a new row
+        ContentValues values = new ContentValues();
+        values.put(MYLIST_ID, mylist_id);
+        values.put(CHECKLIST_ID, checklist_id);
+
+        long id = db.insert(TBL_MYCHECKLIST, null, values);
+
+        // close db connection
+        db.close();
+
+        // return newly inserted row id
+        return id;
+    }
+
     public ArrayList<Checklist> getUserMyListChecklists(String mylist_title) {
         ArrayList<Checklist> checklists = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TBL_MYCHECKLIST + " tmc, " +  MyList.TBL_MYLIST + " tml, " +  Checklist.TBL_NAME + " tc  WHERE tml." + MyList.TITLE  + " = " + mylist_title +  " AND tml."  +  MyList.ID + " = tmc." + MYLIST_ID + " AND tc." + Checklist.ID + " =  tmc." +  CHECKLIST_ID;
@@ -355,6 +401,23 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return adtnlist;
+    }
+
+    public long insertMyAdtnlists(long mylist_id, long adtnlist_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // insert a new row
+        ContentValues values = new ContentValues();
+        values.put(MYLIST_ID, mylist_id);
+        values.put(ADTNLIST_ID, adtnlist_id);
+
+        long id = db.insert(TBL_MYADTNLIST, null, values);
+
+        // close db connection
+        db.close();
+
+        // return newly inserted row id
+        return id;
     }
 
     public ArrayList<Adtnlist> getUserMyListAdtnlists(String mylist_title) {
