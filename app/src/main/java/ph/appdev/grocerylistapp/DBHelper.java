@@ -210,14 +210,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // before deleting user’s mylist, check if should delete all is true
         // get all checklist and adtnlinfo under this mylist
-        List<Checklist> allChecklist = getUserMyListChecklists(mylist.getTitle());
+        List<Checklist> allChecklist = getUserMyListChecklists(mylist.getId());
 
         // delete all user mylist’s checklist
         for (Checklist checklist : allChecklist) {
             // delete checklist
             deleteChecklist(checklist.getId());
         }
-        List<Adtnlist> allAdtnlist = getUserMyListAdtnlists(mylist.getTitle());
+        List<Adtnlist> allAdtnlist = getUserMyListAdtnlists(mylist.getId());
 
         // delete all user mylist’s adtnlist
         for (Adtnlist adtnlist : allAdtnlist) {
@@ -359,9 +359,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(checklist_id) });
     }
 
-    public ArrayList<Checklist> getUserMyListChecklists(String mylist_title) {
+    public ArrayList<Checklist> getUserMyListChecklists(long mylist_id) {
         ArrayList<Checklist> checklists = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TBL_MYCHECKLIST + " tmc, " +  MyList.TBL_MYLIST + " tml, " +  Checklist.TBL_NAME + " tc  WHERE tml." + MyList.TITLE  + " = '" + mylist_title +  "' AND tml."  +  MyList.ID + " = tmc." + MYLIST_ID + " AND tc." + Checklist.ID + " =  tmc." +  CHECKLIST_ID;
+        String selectQuery = "SELECT * FROM " + TBL_MYCHECKLIST + " tmc, " +  MyList.TBL_MYLIST + " tml, " +  Checklist.TBL_NAME + " tc  WHERE tml." + MyList.ID  + " = " + mylist_id +  " AND tml."  +  MyList.ID + " = tmc." + MYLIST_ID + " AND tc." + Checklist.ID + " =  tmc." +  CHECKLIST_ID;
 
         Log.e(LOG, selectQuery);
 
@@ -477,9 +477,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(adtnlist_id) });
     }
 
-    public ArrayList<Adtnlist> getUserMyListAdtnlists(String mylist_title) {
+    public ArrayList<Adtnlist> getUserMyListAdtnlists(long mylist_id) {
         ArrayList<Adtnlist> adtnlists = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TBL_MYADTNLIST + " tma, " +  MyList.TBL_MYLIST + " tml, " +  Adtnlist.TBL_NAME + " ta  WHERE tml." + MyList.TITLE  + " = '" + mylist_title +  "' AND tml."  +  MyList.ID + " = tma." + MYLIST_ID + " AND ta." + Adtnlist.ID + " =  tma." +  ADTNLIST_ID;
+        String selectQuery = "SELECT * FROM " + TBL_MYADTNLIST + " tma, " +  MyList.TBL_MYLIST + " tml, " +  Adtnlist.TBL_NAME + " ta  WHERE tml." + MyList.ID  + " = " + mylist_id +  " AND tml."  +  MyList.ID + " = tma." + MYLIST_ID + " AND ta." + Adtnlist.ID + " =  tma." +  ADTNLIST_ID;
 
         Log.e(LOG, selectQuery);
 

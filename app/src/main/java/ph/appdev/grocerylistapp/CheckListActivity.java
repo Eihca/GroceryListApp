@@ -84,8 +84,8 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
             title.setText(myList.getTitle());
             timestamp.setText(myList.getTimestamp());
             notes.setText(bundle.getString("notes"));
-            checklists = dbHelper.getUserMyListChecklists(myList.getTitle());
-            adtnlists = dbHelper.getUserMyListAdtnlists(myList.getTitle());
+            checklists = dbHelper.getUserMyListChecklists(myList.getId());
+            adtnlists = dbHelper.getUserMyListAdtnlists(myList.getId());
         }
 
         cadapter = new ChecklistAdapter(this, checklists, this);
