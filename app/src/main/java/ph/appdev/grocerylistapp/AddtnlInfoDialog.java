@@ -3,6 +3,8 @@ package ph.appdev.grocerylistapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -12,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import ph.appdev.grocerylistapp.model.Adtnlist;
@@ -30,19 +33,39 @@ public class AddtnlInfoDialog extends AppCompatActivity {
         setContentView(R.layout.dialog_addtnlinfo);
 
         dbHelper = new DBHelper(this);
+
         addorsave = findViewById(R.id.addorsave);
         cancel = findViewById(R.id.closedialog);
         name = findViewById(R.id.infoname);
         value = findViewById(R.id.infovalue);
         category = findViewById(R.id.infocategory);
 
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("Tax");
+        arrayList.add("Discount");
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        category.setAdapter(arrayAdapter);
+        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedcategory = parent.getItemAtPosition(position).toString();
+                Toast.makeText(parent.getContext(), "Selected: " + selectedcategory,
+                        Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView <?> parent) {
+            }
+        });
+        category.setSelection(0);
 
         if (Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("edit")) {
             gotIntent = getIntent().getExtras().getParcelable("listobj");
             addorsave.setText("SAVE");
             name.setText(gotIntent.getName());
             value.setText(String.valueOf(gotIntent.getValue()));
-            /* category.setText(gotIntent.getCategory());*/
+            ArrayAdapter myAdap = (ArrayAdapter) category.getAdapter();
+            category.setSelection(myAdap.getPosition(gotIntent.getCategory()));
         }
     }
 
@@ -61,7 +84,7 @@ public class AddtnlInfoDialog extends AppCompatActivity {
     /*        if (!validateEditText(category)){
                 return;
             }*/
-            gotIntent.setCategory("tax");
+            gotIntent.setCategory(category.getSelectedItem().toString());
             gotIntent.setName(name.getText().toString());
             gotIntent.setValue(Double.parseDouble(df.format(Double.parseDouble(value.getText().toString()))));
             if(Objects.requireNonNull(getIntent().getStringExtra("action")).toLowerCase().equals("add")){

@@ -182,10 +182,9 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         }
     }
 
-
     public void backtoMain(View view){
-        Intent tomain = new Intent();
-        setResult(RESULT_CANCELED, tomain);
+/*        Intent tomain = new Intent();
+        setResult(RESULT_CANCELED, tomain);*/
         finish();
     }
 
@@ -287,12 +286,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         double totalamount = 0;
         for (Adtnlist item : adtnlists){
             if(item.getisChecked() == 1){
-                if(item.getCategory().equals("tax")){
-                    totalamount = totalamount + item.getAmount();
-                }
-                else{
-                    totalamount = totalamount - item.getAmount();
-                }
+                totalamount = totalamount + item.getAmount();
             }
         }
         return totalamount;
@@ -356,7 +350,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
 
     private double getFinalPrice() {
         double finalprice;
-        finalprice = itemstotal + adtnltotal;
+        finalprice = itemstotal - adtnltotal;
         return finalprice;
     }
 

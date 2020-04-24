@@ -5,4 +5,5 @@
     <color name="colorAccent">#03DAC5</color>
 
     <color name="editTxtBg">#EAEBF1</color>
+    <color name="lessgray">#35363A</color>
 </resources>

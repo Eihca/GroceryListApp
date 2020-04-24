@@ -108,9 +108,15 @@ public class AdtnllistAdapter extends RecyclerView.Adapter<AdtnllistAdapter.MyVi
         holder.value.setText(String.valueOf(list.getValue()));
         holder.amount.setText(String.valueOf(list.getAmount()));
 
+/*        if(list.getCategory().equals("Tax")){
+            holder.isChecked.setVisibility(View.INVISIBLE);
+        }*/
+
         if(list.getisChecked() == 1){
             holder.isChecked.setChecked(true);
         }
+
+        holder.category.setText(list.getCategory());
 
         holder.isChecked.setOnClickListener(new View.OnClickListener() {
             @Override
