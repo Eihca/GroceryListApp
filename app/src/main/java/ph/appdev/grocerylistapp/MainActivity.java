@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -14,9 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +29,8 @@ import java.util.Objects;
 import ph.appdev.grocerylistapp.adapter.RecyclerAdapter;
 import ph.appdev.grocerylistapp.model.MyList;
 import ph.appdev.grocerylistapp.model.User;
+import ph.appdev.grocerylistapp.touchhandlers.SwipeController;
+import ph.appdev.grocerylistapp.touchhandlers.SwipeControllerActions;
 
 public class MainActivity extends AppCompatActivity {
     DBHelper dbHelper;
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
     ArrayList<MyList> myLists;
+    SwipeController swipeController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +68,28 @@ public class MainActivity extends AppCompatActivity {
 /*        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));*/
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this,
+
+        swipeController = new SwipeController(new SwipeControllerActions() {
+            @Override
+            public void onRightClicked(int position) {
+                dbHelper.deleteMyList(myLists.get(position));
+                dbHelper.deleteUserMyList(myLists.get(position).getId());
+                myLists.remove(position);
+                adapter.notifyItemRemoved(position);
+            }
+        });
+
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(recyclerView);
+
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeController.onDraw(c);
+            }
+        });
+
+/*        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this,
                 recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, final int position) {
@@ -72,12 +99,12 @@ public class MainActivity extends AppCompatActivity {
             public void onLongClick(View view, int position) {
                 showActionsDialog(position, "rvchecklist");
             }
-        }));
+        }));*/
 
         toggleEmptyNotes();
     }
 
-    private void showActionsDialog(final int position, final String fromwhere) {
+    private void showActionsDialog(final int position) {
         CharSequence colors[] = new CharSequence[]{"Delete"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
