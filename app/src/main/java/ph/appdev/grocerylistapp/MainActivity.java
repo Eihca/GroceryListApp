@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -48,12 +51,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     ArrayList<MyList> myLists;
     SwipeController swipeController;
     ConstraintLayout clmain;
+    ImageView prof_pic;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        prof_pic = findViewById(R.id.user_prof_pic);
         dbHelper = new DBHelper(this);
         recyclerView = findViewById(R.id.mainrv);
         emptyrv = findViewById(R.id.emptyrv);
@@ -64,7 +69,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             cursor.moveToFirst();
             email = cursor.getString(cursor.getColumnIndex(User.EMAIL));
             budget = cursor.getDouble(cursor.getColumnIndex(User.BUDGET));
+
+            byte[] outImage = cursor.getBlob(cursor.getColumnIndex(User.PIC));
+            if(outImage == null){
+                prof_pic.setImageResource(R.drawable.femaleplaceholder);
+            }else {
+                ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
+                Bitmap theImage = BitmapFactory.decodeStream(imageStream);
+                prof_pic.setImageBitmap(theImage);
+            }
         }
+
 
         myLists = dbHelper.getUserMyLists(email);
         adapter = new RecyclerAdapter(this, myLists);

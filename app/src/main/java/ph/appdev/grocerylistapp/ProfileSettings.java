@@ -44,7 +44,9 @@ public class ProfileSettings extends AppCompatActivity {
     Button edit, logout, save, cancel;
     Uri file;
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_GALLERY_IMAGE = 2;
     byte imageInByte[];
+    Bitmap imagebitmap;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,6 +108,21 @@ public class ProfileSettings extends AppCompatActivity {
         }
     }
 
+    public void openGallery(View view){
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, REQUEST_GALLERY_IMAGE);
+    }
+
+    public void onStop() {
+        super.onStop();
+        if (imagebitmap != null) {
+            imagebitmap.recycle();
+            imagebitmap = null;
+            System.gc();
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == 0) {
@@ -151,12 +168,31 @@ public class ProfileSettings extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            user_pic.setImageBitmap(imageBitmap);
 
+        if(resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                user_pic.setImageBitmap(imageBitmap);
+
+            }
+            else if (requestCode == REQUEST_GALLERY_IMAGE){
+                Uri photoUri = data.getData();
+                if (photoUri != null) {
+                    try {
+                        imagebitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
+                        user_pic.setImageBitmap(imagebitmap);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }else {
+                    Toast.makeText(getApplicationContext(), "Failed to fetch picture from gallery."  , Toast.LENGTH_SHORT).show();
+                }
+
+            }
             bitmaptobyte();
+
         }
     }
 
