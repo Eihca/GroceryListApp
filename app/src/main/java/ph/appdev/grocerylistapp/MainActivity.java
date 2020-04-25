@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -18,10 +19,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -29,10 +33,11 @@ import java.util.Objects;
 import ph.appdev.grocerylistapp.adapter.RecyclerAdapter;
 import ph.appdev.grocerylistapp.model.MyList;
 import ph.appdev.grocerylistapp.model.User;
+import ph.appdev.grocerylistapp.touchhandlers.RecyclerItemTouchHelper;
 import ph.appdev.grocerylistapp.touchhandlers.SwipeController;
 import ph.appdev.grocerylistapp.touchhandlers.SwipeControllerActions;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
     DBHelper dbHelper;
     private static final int PROF_SET = 1;
     TextView emptyrv;
@@ -42,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerAdapter adapter;
     ArrayList<MyList> myLists;
     SwipeController swipeController;
+    ConstraintLayout clmain;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         recyclerView = findViewById(R.id.mainrv);
         emptyrv = findViewById(R.id.emptyrv);
-
+        clmain = findViewById(R.id.clmain);
         Cursor cursor = dbHelper.getUser(SavedSharedPreference.getLoggedUser(getApplicationContext()));
 
         if(cursor.getCount() != 0){
@@ -69,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+
+/*
         swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
@@ -88,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 swipeController.onDraw(c);
             }
         });
+*/
 
 /*        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this,
                 recyclerView, new RecyclerTouchListener.ClickListener() {
@@ -164,6 +175,38 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+        }
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if (viewHolder instanceof RecyclerAdapter.MyViewHolder) {
+            // get the removed item name to display it in snack bar
+            String name = myLists.get(viewHolder.getAdapterPosition()).getTitle();
+
+            // backup of removed item for undo purpose
+            final MyList deletedItem = myLists.get(viewHolder.getAdapterPosition());
+            final int deletedIndex = viewHolder.getAdapterPosition();
+
+            dbHelper.deleteMyList(myLists.get(position));
+            dbHelper.deleteUserMyList(myLists.get(position).getId());
+            // remove the item from recycler view
+            adapter.removeItem(viewHolder.getAdapterPosition());
+
+            toggleEmptyNotes();
+            // showing snack bar with Undo option
+/*            Snackbar snackbar = Snackbar
+                    .make(clmain, name + " removed from cart!", Snackbar.LENGTH_LONG);
+            snackbar.setAction("UNDO", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    // undo is selected, restore the deleted item
+                    adapter.restoreItem(deletedItem, deletedIndex);
+                }
+            });
+            snackbar.setActionTextColor(Color.WHITE);
+            snackbar.show();*/
         }
     }
 }

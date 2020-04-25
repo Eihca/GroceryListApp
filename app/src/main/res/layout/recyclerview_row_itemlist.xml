@@ -24,6 +24,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_margin="@dimen/margin_padding_size_small"
+            android:buttonTint="@color/cardview_dark_background"
+
            />
 
         <TextView
@@ -37,6 +39,7 @@
             android:layout_marginRight="@dimen/margin_padding_size_medium"
             android:textSize="@dimen/text_size_medium"
             android:textStyle="bold"
+            android:fontFamily="@font/raleway_semibold"
             app:layout_constraintEnd_toStartOf="@+id/verguide"
             app:layout_constraintStart_toEndOf="@id/chkbx"
             app:layout_constraintTop_toTopOf="parent"
@@ -48,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:text="Item Price"
+            android:fontFamily="@font/raleway_semibold"
             android:textSize="@dimen/text_size_medium"
             app:layout_constraintEnd_toEndOf="@id/verguide"
             app:layout_constraintStart_toStartOf="@id/item_name"
@@ -83,6 +87,7 @@
             app:layout_constraintTop_toBottomOf="@+id/btninc"
             app:layout_constraintBottom_toTopOf="@+id/btndec"
             android:hint="0"
+            android:fontFamily="@font/raleway_semibold"
             android:editable="false"
             android:background="@android:color/transparent"
             android:inputType="number"
@@ -125,6 +130,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:text="0.00"
+            android:fontFamily="@font/raleway_semibold"
             android:textStyle="bold"
             android:textAlignment="center"
             android:gravity="center|center_vertical"/>

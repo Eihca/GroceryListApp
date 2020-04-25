@@ -83,7 +83,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         if(bundle.getString("action").toLowerCase().equals("edit")){
             title.setText(myList.getTitle());
             timestamp.setText(myList.getTimestamp());
-            notes.setText(bundle.getString("notes"));
+            notes.setText(myList.getNote());
             checklists = dbHelper.getUserMyListChecklists(myList.getId());
             adtnlists = dbHelper.getUserMyListAdtnlists(myList.getId());
         }
@@ -315,9 +315,9 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Bundle bundle = data.getExtras();
-
             if(resultCode == Activity.RESULT_OK){
+                assert data != null;
+                Bundle bundle = data.getExtras();
                 if(bundle != null){
                     if(requestCode == ITEMS_DIALOG){
                         Checklist tempchklist = bundle.getParcelable("modlistobj");

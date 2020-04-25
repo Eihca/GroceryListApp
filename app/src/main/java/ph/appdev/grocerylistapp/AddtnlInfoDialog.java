@@ -43,15 +43,16 @@ public class AddtnlInfoDialog extends AppCompatActivity {
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("Tax");
         arrayList.add("Discount");
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item_selected, arrayList);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         category.setAdapter(arrayAdapter);
         category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedcategory = parent.getItemAtPosition(position).toString();
-                Toast.makeText(parent.getContext(), "Selected: " + selectedcategory,
-                        Toast.LENGTH_SHORT).show();
+/*                Toast.makeText(parent.getContext(), "Selected: " + selectedcategory,
+                        Toast.LENGTH_SHORT).show();*/
             }
             @Override
             public void onNothingSelected(AdapterView <?> parent) {

@@ -23,7 +23,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                android:background="@drawable/gradient_bg"
+                android:background="@color/cardview_dark_background"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -69,7 +69,7 @@
                 android:background="@android:color/transparent"
                 android:textColorHint="@android:color/darker_gray"
                 android:textColor="@android:color/black"
-                android:fontFamily="monospace"
+                android:fontFamily="@font/playfair_display_normal"
                 android:layout_margin="@dimen/text_size_small"/>
 
             <View
@@ -107,9 +107,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Notes"
+                    android:fontFamily="monospace"
                     android:textSize="@dimen/text_size_medium"
                     android:textColor="@android:color/white"
-                    android:background="@drawable/gradient_loginbtn"
+                    android:background="@drawable/black_loginbtn"
                     android:padding="@dimen/margin_padding_size_small"
                     android:elevation="4dp"
                     android:outlineProvider="none"
@@ -125,6 +126,7 @@
                     android:paddingEnd="@dimen/margin_padding_size_medium"
                     android:paddingBottom="@dimen/margin_padding_size_medium"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_semibold"
                     android:hint="Type details about this list..."
                     android:background="@drawable/border"
                     android:inputType="textMultiLine" />
@@ -146,7 +148,8 @@
                     android:text="Items"
                     android:textSize="@dimen/text_size_medium"
                     android:textColor="@android:color/white"
-                    android:background="@drawable/gradient_loginbtn"
+                    android:background="@drawable/black_loginbtn"
+                    android:fontFamily="monospace"
                     android:padding="@dimen/margin_padding_size_small"
                     android:elevation="4dp"
                     android:outlineProvider="none"
@@ -170,7 +173,7 @@
                 android:text="Add an item"
                 android:onClick="openDialog"
                 android:textColor="@android:color/white"
-                android:background="@drawable/gradient_bg"
+                android:background="@color/cardview_dark_background"
                 app:layout_constraintStart_toStartOf="@id/rllistitems"
                 app:layout_constraintEnd_toEndOf="@id/rllistitems"
                 app:layout_constraintTop_toBottomOf="@id/rllistitems"/>
@@ -239,8 +242,9 @@
                     android:text="Additional Info"
                     android:textSize="@dimen/text_size_medium"
                     android:textColor="@android:color/white"
-                    android:background="@drawable/gradient_loginbtn"
+                    android:background="@drawable/black_loginbtn"
                     android:padding="@dimen/margin_padding_size_small"
+                    android:fontFamily="monospace"
                     android:elevation="4dp"
                     android:outlineProvider="none"
                     android:layout_margin="@dimen/margin_padding_size_small"/>
@@ -260,7 +264,7 @@
                 android:id="@+id/addaddtnlinfo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_bg"
+                android:background="@color/cardview_dark_background"
                 android:textColor="@android:color/white"
                 android:onClick="openDialog"
                 android:text="Add Additional Info"
