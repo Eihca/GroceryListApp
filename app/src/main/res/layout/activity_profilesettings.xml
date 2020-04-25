@@ -64,13 +64,15 @@
         android:id="@+id/clcam"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/user_pic_card"
-        app:layout_constraintBottom_toBottomOf="@id/user_pic_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_pic_card"
         app:layout_constraintEnd_toStartOf="@id/verguide3"
         android:elevation="4dp"
         android:outlineProvider="none"
-        android:background="@color/cardview_dark_background"
+        android:padding="@dimen/margin_padding_size_small"
+        android:background="@drawable/black_loginbtn"
         android:alpha=".8"
+        android:layout_margin="@dimen/margin_padding_size_medium"
         android:onClick="takePicture">
 
         <ImageView
@@ -100,11 +102,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/verguide3"
-        app:layout_constraintEnd_toEndOf="@id/user_pic_card"
-        app:layout_constraintBottom_toBottomOf="@id/user_pic_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_pic_card"
+        android:padding="@dimen/margin_padding_size_small"
         android:elevation="4dp"
         android:outlineProvider="none"
-        android:background="@color/cardview_dark_background"
+        android:layout_margin="@dimen/margin_padding_size_medium"
+        android:background="@drawable/black_loginbtn"
         android:alpha=".8"
         android:onClick="openGallery">
 
@@ -130,7 +134,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/border"
-        app:layout_constraintTop_toBottomOf="@+id/user_pic_card"
+        app:layout_constraintTop_toBottomOf="@+id/clcam"
         android:layout_margin="@dimen/margin_padding_size_large"
         android:fontFamily="@font/raleway_semibold"
         android:hint="Name"
@@ -208,6 +212,7 @@
         android:layout_marginRight="@dimen/margin_padding_size_large"/>
 
     <EditText
+        android:visibility="gone"
         android:id="@+id/user_budget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
