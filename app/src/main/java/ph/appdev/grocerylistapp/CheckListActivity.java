@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,8 +38,9 @@ import ph.appdev.grocerylistapp.model.Adtnlist;
 import ph.appdev.grocerylistapp.model.Checklist;
 import ph.appdev.grocerylistapp.model.MyList;
 import ph.appdev.grocerylistapp.model.User;
+import ph.appdev.grocerylistapp.touchhandlers.RecyclerItemTouchHelper;
 
-public class CheckListActivity extends AppCompatActivity implements ChecklistAdapter.TotalListener, AdtnllistAdapter.TotalListener{
+public class CheckListActivity extends AppCompatActivity implements ChecklistAdapter.TotalListener, AdtnllistAdapter.TotalListener, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
     private static final int ITEMS_DIALOG = 1;
     private static final int ADTNL_DIALOG = 2;
     private int selectedItem;
@@ -51,7 +53,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     private SimpleDateFormat customdateformat;
     DBHelper dbHelper;
     EditText title, notes;
-    TextView timestamp, itemstotalprice, adtntotalprice, totalprice;
+    TextView timestamp, itemstotalprice, adtntotalprice, totalprice, emptylrv, emptyarv;
     RecyclerView rvChecklist, rvAdtnllist;
     ArrayList<Checklist> checklists = new ArrayList();
     ArrayList<Adtnlist> adtnlists = new ArrayList();
@@ -78,6 +80,8 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         itemstotalprice = findViewById(R.id.itemstotalprice);
         adtntotalprice = findViewById(R.id.adtnltotalprice);
         totalprice = findViewById(R.id.totalprice);
+        emptylrv = findViewById(R.id.emptylrv);
+        emptyarv = findViewById(R.id.emptyarv);
 
         timestamp.setVisibility(View.GONE);
         bundle = getIntent().getExtras();
@@ -96,39 +100,48 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         rvChecklist.setLayoutManager(layoutManager);
         rvChecklist.setItemAnimator(new DefaultItemAnimator());
-        /*        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));*/
         rvChecklist.setAdapter(cadapter);
-        rvChecklist.addOnItemTouchListener(new RecyclerTouchListener(this,
-                rvChecklist, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, final int position) {
-            }
 
-            @Override
-            public void onLongClick(View view, int position) {
-                showActionsDialog(position, "rvchecklist");
-            }
-        }));
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvChecklist);
 
         aadapter = new AdtnllistAdapter(this, adtnlists, this);
         RecyclerView.LayoutManager alayoutManager = new LinearLayoutManager(getApplicationContext());
         rvAdtnllist.setLayoutManager(alayoutManager);
         rvAdtnllist.setItemAnimator(new DefaultItemAnimator());
-        /*        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));*/
         rvAdtnllist.setAdapter(aadapter);
-        rvAdtnllist.addOnItemTouchListener(new RecyclerTouchListener(this,
-                rvAdtnllist, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, final int position) {
-            }
 
-            @Override
-            public void onLongClick(View view, int position) {
-                showActionsDialog(position, "rvadtnlist");
-            }
-        }));
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback2 = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback2).attachToRecyclerView(rvAdtnllist);
 
         updateValueofViewsOutsideRV();
+        toggleEmpty();
+    }
+
+    private void toggleEmpty() {
+        // you can check notesList.size() > 0
+        if (checklists.size() > 0) {
+            emptylrv.setVisibility(View.GONE);
+        } else {
+            emptylrv.setVisibility(View.VISIBLE);
+        }
+
+        if (adtnlists.size() > 0) {
+            emptyarv.setVisibility(View.GONE);
+        } else {
+            emptyarv.setVisibility(View.VISIBLE);
+        }
+    }
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if (viewHolder instanceof ChecklistAdapter.MyViewHolder) {
+            showActionsDialog(viewHolder.getAdapterPosition(), "checklists");
+            cadapter.notifyItemChanged(viewHolder.getAdapterPosition());
+        }else {
+            showActionsDialog(viewHolder.getAdapterPosition(), "adtnlists");
+            aadapter.notifyItemChanged(viewHolder.getAdapterPosition());
+        }
+
     }
 
     private String formatDate(String dateStr) {
@@ -178,6 +191,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                 }else {
                     deleteRow(position, "adtnlists");
                 }
+                toggleEmpty();
             }
         });
         builder.show();
@@ -201,11 +215,10 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
             aadapter.notifyItemRemoved(position);
         }
         updateValueofViewsOutsideRV();
+
     }
 
     public void backtoMain(View view){
-/*        Intent tomain = new Intent();
-        setResult(RESULT_CANCELED, tomain);*/
         finish();
     }
 
@@ -266,7 +279,6 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
 
             myList.setTimestamp( getCurrentTime());
             dbHelper.updateMList(myList);
-//            backtoMain.putExtra("action", "save");
 
         }
         else {
@@ -283,14 +295,9 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
             Cursor cursor = dbHelper.getUser(bundle.getString("logged_user"));
             if(cursor.getCount() != 0){
                 cursor.moveToFirst();
-                newmylistid = dbHelper.insertUserMylists(cursor.getInt(cursor.getColumnIndex(User.ID)), mylistid);
-                MyList newmylist = new MyList();
-                dbHelper.getMyList(newmylistid);
-//                backtoMain.putExtra("newmylistobj", newmylist);
+                dbHelper.insertUserMylists(cursor.getInt(cursor.getColumnIndex(User.ID)), mylistid);
 
             }
-//            setResult(RESULT_OK, backtoMain);
-//            backtoMain.putExtra("action", "add");
         }
 
         startActivity(backtoMain);
@@ -306,16 +313,6 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         return date;
     }
 
-    /* public double getTotalAmount(){
-         double totalamount = 0;
-         for (Adtnlist item : adtnlists){
-             if(item.getisChecked() == 1){
-                 totalamount = totalamount + item.getAmount();
-             }
-         }
-         return totalamount;
-     }
- */
     public void updateAmountPerInfo(){
         int position = 0;
         for (Adtnlist info: adtnlists){
@@ -324,9 +321,6 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
             position++;
         }
 
-/*        this.adtnltotal = aadapter.returnTotal();
-        adtntotalprice.setText(String.valueOf(adtnltotal));
-        totalprice.setText(String.format("%.2f",getFinalPrice()));*/
         updateValueofViewsOutsideRV();
     }
 
@@ -351,9 +345,6 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                         }
                         Log.d("price", Double.toString(tempchklist.getPrice()));
 
-//                        cadapter.notifyDataSetChanged();
-/*                        itemstotalprice.setText(String.format("%.2f", cadapter.returnTotal()));
-                        itemstotal = cadapter.returnTotal();*/
                     }
                     else{
                         Adtnlist tempadtnlist = bundle.getParcelable("adtnlistobj");
@@ -367,14 +358,10 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
                             adtnlists.add(tempadtnlist);
                             aadapter.notifyItemInserted(adtnlists.size() - 1);
                         }
-//                        aadapter.notifyDataSetChanged();
-/*                        adtntotalprice.setText(String.format("%.2f",aadapter.returnTotal()));
-                        adtnltotal = aadapter.returnTotal();*/
                     }
-//                    totalprice.setText(String.format("%.2f",getFinalPrice()));
-
                     updateValueofViewsOutsideRV();
                     updateAmountPerInfo();
+                    toggleEmpty();
                 }
             }
     }
@@ -388,14 +375,8 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     @SuppressLint("DefaultLocale")
     @Override
     public void onTotalUpdate(double total) {
-      /*  itemstotalprice.setText(""+total);*/
-/*        itemstotalprice.setText(String.format("%.2f",cadapter.returnTotal()));
-        this.itemstotal = cadapter.returnTotal();
-        totalprice.setText(String.format("%.2f", getFinalPrice()));
-        this.finaltotal = getFinalPrice();*/
         updateValueofViewsOutsideRV();
         updateAmountPerInfo();
-        /*this.itemstotal = total;*/
     }
 
     @Override
@@ -406,14 +387,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     @SuppressLint("DefaultLocale")
     @Override
     public void onTotalAmountUpdate(double totalamount) {
-/*        adtntotalprice.setText(""+totalamount);*/
-/*        adtntotalprice.setText(String.format("%.2f", aadapter.returnTotal()));
-        adtnltotal = aadapter.returnTotal();
-        totalprice.setText(String.format("%.2f", getFinalPrice()));
-        this.finaltotal = getFinalPrice();*/
         updateValueofViewsOutsideRV();
-        /*this.adtnltotal = totalamount;*/
-
     }
 
     @Override

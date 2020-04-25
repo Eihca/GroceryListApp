@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +34,7 @@ public class AdtnllistAdapter extends RecyclerView.Adapter<AdtnllistAdapter.MyVi
     TotalListener totalListener;
     private int selectedItem = -1;
     DecimalFormat df = new DecimalFormat("#.##");
+
 
     public interface TotalListener {
         void onTotalAmountUpdate(double total);
@@ -72,6 +74,7 @@ public class AdtnllistAdapter extends RecyclerView.Adapter<AdtnllistAdapter.MyVi
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, value, category, amount;
         public CheckBox isChecked;
+        public RelativeLayout viewBackground, viewForeground;
 
         public MyViewHolder(View view) {
             super(view);
@@ -80,6 +83,8 @@ public class AdtnllistAdapter extends RecyclerView.Adapter<AdtnllistAdapter.MyVi
             category = view.findViewById(R.id.info_categ);
             amount = view.findViewById(R.id.info_amount);
             isChecked = view.findViewById(R.id.chkbx);
+            viewBackground = view.findViewById(R.id.view_background);
+            viewForeground = view.findViewById(R.id.view_foreground);
         }
     }
 
@@ -107,10 +112,6 @@ public class AdtnllistAdapter extends RecyclerView.Adapter<AdtnllistAdapter.MyVi
         holder.category.setText(list.getCategory());
         holder.value.setText(String.valueOf(list.getValue()));
         holder.amount.setText(String.valueOf(list.getAmount()));
-
-/*        if(list.getCategory().equals("Tax")){
-            holder.isChecked.setVisibility(View.INVISIBLE);
-        }*/
 
         if(list.getisChecked() == 1){
             holder.isChecked.setChecked(true);
@@ -151,5 +152,6 @@ public class AdtnllistAdapter extends RecyclerView.Adapter<AdtnllistAdapter.MyVi
     public int getItemCount() {
         return lists.size();
     }
+
 
 }

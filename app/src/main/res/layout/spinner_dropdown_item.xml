@@ -8,6 +8,7 @@
     android:singleLine="true"
     android:layout_width="match_parent"
     android:layout_height="?attr/dropdownListPreferredItemHeight"
-    android:ellipsize="marquee"/>
+    android:ellipsize="marquee"
+    android:fontFamily="@font/raleway_semibold"/>
 
 

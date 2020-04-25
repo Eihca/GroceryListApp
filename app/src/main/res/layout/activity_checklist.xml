@@ -164,6 +164,20 @@
                     android:paddingTop="@dimen/margin_padding_size_large"
                     android:minHeight="80dp"/>
 
+                <TextView
+                    android:id="@+id/emptylrv"
+                    android:layout_marginTop="25dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/rvlistitems"
+                    android:layout_alignEnd="@+id/rvlistitems"
+                    android:layout_alignTop="@id/rvlistitems"
+                    android:layout_alignBottom="@id/rvlistitems"
+                    android:gravity="center"
+                    android:text="Click the button below to add an item"
+                    android:layout_alignLeft="@+id/rvlistitems"
+                    android:layout_alignRight="@+id/rvlistitems" />
+
             </RelativeLayout>
 
             <Button
@@ -258,6 +272,20 @@
                     android:background="@drawable/border"
                     android:minHeight="80dp"
                     android:paddingTop="@dimen/margin_padding_size_large" />
+
+                <TextView
+                    android:id="@+id/emptyarv"
+                    android:layout_marginTop="25dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/rvaddtnlinfo"
+                    android:layout_alignEnd="@+id/rvaddtnlinfo"
+                    android:layout_alignTop="@id/rvaddtnlinfo"
+                    android:layout_alignBottom="@id/rvaddtnlinfo"
+                    android:gravity="center"
+                    android:text="Click the button below to add an info"
+                    android:layout_alignLeft="@+id/rvaddtnlinfo"
+                    android:layout_alignRight="@+id/rvaddtnlinfo" />
 
             </RelativeLayout>
 

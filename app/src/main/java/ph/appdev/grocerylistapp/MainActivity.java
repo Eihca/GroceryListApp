@@ -7,18 +7,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -31,14 +24,11 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import ph.appdev.grocerylistapp.adapter.RecyclerAdapter;
 import ph.appdev.grocerylistapp.model.MyList;
 import ph.appdev.grocerylistapp.model.User;
 import ph.appdev.grocerylistapp.touchhandlers.RecyclerItemTouchHelper;
-import ph.appdev.grocerylistapp.touchhandlers.SwipeController;
-import ph.appdev.grocerylistapp.touchhandlers.SwipeControllerActions;
 
 public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
     DBHelper dbHelper;
@@ -49,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
     ArrayList<MyList> myLists;
-    SwipeController swipeController;
     ConstraintLayout clmain;
     ImageView prof_pic;
 
@@ -86,46 +75,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-/*        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, LinearLayoutManager.VERTICAL, 16));*/
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
-/*
-        swipeController = new SwipeController(new SwipeControllerActions() {
-            @Override
-            public void onRightClicked(int position) {
-                dbHelper.deleteMyList(myLists.get(position));
-                dbHelper.deleteUserMyList(myLists.get(position).getId());
-                myLists.remove(position);
-                adapter.notifyItemRemoved(position);
-            }
-        });
-
-        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
-        itemTouchhelper.attachToRecyclerView(recyclerView);
-
-        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                swipeController.onDraw(c);
-            }
-        });
-*/
-
-/*        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this,
-                recyclerView, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, final int position) {
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-                showActionsDialog(position, "rvchecklist");
-            }
-        }));*/
 
         toggleEmptyNotes();
     }
@@ -142,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                 dbHelper.deleteUserMyList(myLists.get(position).getId());
                 myLists.remove(position);
                 adapter.notifyItemRemoved(position);
+                toggleEmptyNotes();
             }
         });
         builder.show();
@@ -159,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         gotoChecklist.putExtra("action", "add");
         gotoChecklist.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(gotoChecklist);
-        /*startActivityForResult(gotoChecklist, 1);*/
     }
 
     private void toggleEmptyNotes() {
@@ -203,12 +158,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             final MyList deletedItem = myLists.get(viewHolder.getAdapterPosition());
             final int deletedIndex = viewHolder.getAdapterPosition();
 
-            dbHelper.deleteMyList(myLists.get(position));
-            dbHelper.deleteUserMyList(myLists.get(position).getId());
-            // remove the item from recycler view
-            adapter.removeItem(viewHolder.getAdapterPosition());
+            showActionsDialog(viewHolder.getAdapterPosition());
 
-            toggleEmptyNotes();
+            adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+
             // showing snack bar with Undo option
 /*            Snackbar snackbar = Snackbar
                     .make(clmain, name + " removed from cart!", Snackbar.LENGTH_LONG);

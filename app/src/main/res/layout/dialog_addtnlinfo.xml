@@ -40,6 +40,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Type name here.."
+        android:paddingStart="@dimen/margin_padding_size_small"
+        android:paddingLeft="@dimen/margin_padding_size_small"
         android:fontFamily="@font/raleway_semibold"
         android:singleLine="true"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,6 +55,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Type value here.."
+        android:paddingStart="@dimen/margin_padding_size_small"
+        android:paddingLeft="@dimen/margin_padding_size_small"
         android:fontFamily="@font/raleway_semibold"
         android:singleLine="true"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,17 +66,19 @@
         android:layout_margin="@dimen/margin_padding_size_medium"
         android:inputType="numberDecimal"/>
 
-    <ImageView
+    <TextView
         android:layout_width="20dp"
         android:layout_height="20dp"
         app:layout_constraintEnd_toEndOf="@id/infovalue"
         app:layout_constraintTop_toTopOf="@id/infovalue"
         app:layout_constraintBottom_toBottomOf="@id/infovalue"
-        android:src="@drawable/ic_percent"
-        android:layout_marginEnd="@dimen/margin_padding_size_small"
+        android:text="%"
+        android:gravity="end"
+        android:textSize="16dp"
+        android:fontFamily="@font/raleway_semibold"
+        android:layout_marginEnd="@dimen/margin_padding_size_large"
         android:layout_marginRight="@dimen/margin_padding_size_small"
-        android:tint="@color/lessgray"
-        android:scaleType="centerCrop"/>
+        android:tint="@color/lessgray"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"

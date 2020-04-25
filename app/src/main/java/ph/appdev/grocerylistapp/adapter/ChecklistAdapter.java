@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
     private int selectedItem = -1;
     DecimalFormat df = new DecimalFormat("#.##");
 
+
     public interface TotalListener {
         void onTotalUpdate(double total);
         void onSelectedItemUpdate(int selecteditem);
@@ -56,7 +58,6 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 total = total + item.getPrice();
             }
         }
-//        total = Double.parseDouble(df.format(total));
         totalListener.onTotalUpdate(total);
     }
 
@@ -69,7 +70,6 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
                 total = total + item.getPrice();
             }
         }
-//        total = Double.parseDouble(df.format(total));
 
         return total;
     }
@@ -81,6 +81,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
         public CheckBox isChecked;
         public EditText quantity;
         private ImageView btninc, btndec;
+        public RelativeLayout viewBackground, viewForeground;
 
         public MyViewHolder(View view) {
             super(view);
@@ -91,6 +92,8 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
             quantity = view.findViewById(R.id.quantitytxt);
             btninc = view.findViewById(R.id.btninc);
             btndec = view.findViewById(R.id.btndec);
+            viewBackground = view.findViewById(R.id.view_background);
+            viewForeground = view.findViewById(R.id.view_foreground);
         }
     }
 
@@ -191,4 +194,6 @@ public class ChecklistAdapter extends RecyclerView.Adapter<ChecklistAdapter.MyVi
     public int getItemCount() {
         return lists.size();
     }
+
+
 }
