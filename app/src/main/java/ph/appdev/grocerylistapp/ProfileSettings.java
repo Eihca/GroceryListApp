@@ -1,8 +1,17 @@
 package ph.appdev.grocerylistapp;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.KeyListener;
 import android.text.method.PasswordTransformationMethod;
@@ -15,16 +24,27 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import ph.appdev.grocerylistapp.model.User;
 
 public class ProfileSettings extends AppCompatActivity {
     DBHelper dbHelper;
-    ConstraintLayout clcam;
+    ConstraintLayout clcam, clgal;
     EditText name, email, password, confirm_pass, budget;
     KeyListener namelistener, emaillistener, budgetlistener;
-    ImageView eye, eye1;
+    ImageView eye, eye1, user_pic;
     Button edit, logout, save, cancel;
+    Uri file;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    byte imageInByte[];
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +52,7 @@ public class ProfileSettings extends AppCompatActivity {
         setContentView(R.layout.activity_profilesettings);
 
         clcam = findViewById(R.id.clcam);
+        clgal = findViewById(R.id.clgal);
         name = findViewById(R.id.user_name);
         email = findViewById(R.id.user_email);
         budget = findViewById(R.id.user_budget);
@@ -43,12 +64,14 @@ public class ProfileSettings extends AppCompatActivity {
         edit = findViewById(R.id.edit_profile);
         cancel = findViewById(R.id.cancelbtn);
         save = findViewById(R.id.save_profile);
+        user_pic = findViewById(R.id.user_pic);
 
         dbHelper = new DBHelper(this);
 
         displayUserInfo();
 
         clcam.setVisibility(View.GONE);
+        clgal.setVisibility(View.GONE);
         password.setVisibility(View.GONE);
         confirm_pass.setVisibility(View.GONE);
         eye.setVisibility(View.GONE);
@@ -61,6 +84,87 @@ public class ProfileSettings extends AppCompatActivity {
         budgetlistener = budget.getKeyListener();
         budget.setKeyListener(null);
 
+
+
+/*        clcam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+  *//*              if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    clcam.setEnabled(false);
+                    ActivityCompat.requestPermissions(ProfileSettings.this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
+                }*//*
+            }
+        });*/
+
+    }
+
+    public void takePicture(View view) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 0) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                clcam.setEnabled(true);
+            }
+        }
+    }
+/*    public void takePicture(View view) {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        file = Uri.fromFile(getOutputMediaFile());
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
+
+        startActivityForResult(intent, 100);
+    }*/
+
+    private static File getOutputMediaFile(){
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "CameraDemo");
+
+        if (!mediaStorageDir.exists()){
+            if (!mediaStorageDir.mkdirs()){
+                return null;
+            }
+        }
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return new File(mediaStorageDir.getPath() + File.separator +
+                "IMG_"+ timeStamp + ".jpg");
+    }
+/*
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100) {
+            if (resultCode == RESULT_OK) {
+                user_pic.setImageURI(file);
+            }
+        }
+    }*/
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            user_pic.setImageBitmap(imageBitmap);
+
+            bitmaptobyte();
+        }
+    }
+
+    public void bitmaptobyte(){
+        Bitmap bm=((BitmapDrawable)user_pic.getDrawable()).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        imageInByte = stream.toByteArray();
     }
 
     public void logOut(View view){
@@ -72,6 +176,7 @@ public class ProfileSettings extends AppCompatActivity {
 
     public void cancelEdit(View view){
         clcam.setVisibility(View.GONE);
+        clgal.setVisibility(View.GONE);
         password.setVisibility(View.GONE);
         confirm_pass.setVisibility(View.GONE);
 
@@ -95,6 +200,7 @@ public class ProfileSettings extends AppCompatActivity {
 
     public void editProfile(View view){
         clcam.setVisibility(View.VISIBLE);
+        clgal.setVisibility(View.VISIBLE);
         password.setVisibility(View.VISIBLE);
         confirm_pass.setVisibility(View.VISIBLE);
         eye.setVisibility(View.VISIBLE);
@@ -124,7 +230,7 @@ public class ProfileSettings extends AppCompatActivity {
             return;
         }
 
-        boolean result = dbHelper.saveUser(name.getText().toString(), email.getText().toString(), password.getText().toString(), Double.parseDouble(budget.getText().toString()));
+        boolean result = dbHelper.saveUser(name.getText().toString(), email.getText().toString(), password.getText().toString(), Double.parseDouble(budget.getText().toString()), imageInByte);
         if (result){
             Toast.makeText(getApplicationContext(), "Saved Changes", Toast.LENGTH_LONG).show();
             finish();
@@ -141,6 +247,17 @@ public class ProfileSettings extends AppCompatActivity {
             name.setText(cursor.getString(cursor.getColumnIndex(User.USER_NAME)));
             email.setText(cursor.getString(cursor.getColumnIndex(User.EMAIL)));
             budget.setText(String.valueOf(cursor.getDouble(cursor.getColumnIndex(User.BUDGET))));
+
+            byte[] outImage = cursor.getBlob(cursor.getColumnIndex(User.PIC));
+            if(outImage == null){
+                user_pic.setImageResource(R.drawable.femaleplaceholder);
+            }else {
+                ByteArrayInputStream imageStream = new ByteArrayInputStream(outImage);
+                Bitmap theImage = BitmapFactory.decodeStream(imageStream);
+                user_pic.setImageBitmap(theImage);
+                bitmaptobyte();
+            }
+
         }
     }
 

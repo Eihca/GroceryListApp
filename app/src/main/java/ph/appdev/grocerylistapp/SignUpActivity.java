@@ -69,7 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        boolean result = dbHelper.saveUser(name, email, password, 500.00);
+        boolean result = dbHelper.saveUser(name, email, password, 500.00, null);
         if (result){
             Toast.makeText(getApplicationContext(), "You may Log in to your account now.", Toast.LENGTH_LONG).show();
             finish();

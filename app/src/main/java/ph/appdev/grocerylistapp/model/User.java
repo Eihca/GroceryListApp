@@ -6,6 +6,7 @@ public class User {
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
     public static final String USER_NAME = "name";
+    public static final String PIC = "imageinbyte";
     public static final String BUDGET = "budget";
 
     private int id;
@@ -13,6 +14,7 @@ public class User {
     private String password;
     private String name;
     private Double budget;
+    private byte [] pic;
 
     public static final String DROP_TBL_USER = "DROP TABLE IF EXISTS "  + TBL_USER;
     public static final String CREATE_TBL_USER = "create table " + TBL_USER +  " (" +
@@ -20,16 +22,17 @@ public class User {
         EMAIL + " text UNIQUE," +
         PASSWORD + " text," +
         USER_NAME + " text, " +
-        BUDGET + " DECIMAL(4,2))";
+        BUDGET + " DECIMAL(4,2), " +  PIC + " BLOB)";
 
 
 
-    public User (int id, String email, String password, String name, Double budget){
+    public User (int id, String email, String password, String name, Double budget, byte[] imageinbyte){
         this.id = id;
         this.email = email;
         this.password = password;
         this.name = name;
         this.budget = budget;
+        this.pic = imageinbyte;
     }
 
     public int getId(){
@@ -70,5 +73,13 @@ public class User {
 
     public void setBudget(Double budget) {
         this.budget = budget;
+    }
+
+    public byte[] getPic() {
+        return pic;
+    }
+
+    public void setPic(byte[] pic) {
+        this.pic = pic;
     }
 }

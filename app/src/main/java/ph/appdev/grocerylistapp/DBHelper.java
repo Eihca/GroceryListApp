@@ -90,7 +90,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean saveUser(String name, String email, String password, double budget)
+    public boolean saveUser(String name, String email, String password, double budget, byte[] imageinByte)
     {
         Cursor cursor = getUser(email);
         SQLiteDatabase db = this.getWritableDatabase();
@@ -98,6 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(User.USER_NAME, name);
         contentValues.put(User.PASSWORD, password);
         contentValues.put(User.BUDGET, budget);
+        contentValues.put(User.PIC, imageinByte);
 
         long result;
         if (cursor.getCount() == 0) { // Record does not exist
@@ -120,7 +121,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.rawQuery(sql, new String[] { email });
     }
 
-    public long insertMList(String title, String note) {
+    public long insertMList(String title, String note, String timestamp) {
         // get writable database as we want to write data
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -129,6 +130,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // `id` and `timestamp` will be inserted automatically.
         values.put(MyList.TITLE, title);
         values.put(MyList.NOTE, note);
+        values.put(MyList.TIMESTAMP, timestamp);
         long id = db.insert(MyList.TBL_MYLIST, null, values);
 
         // close db connection

@@ -65,12 +65,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/user_pic_card"
-        app:layout_constraintEnd_toEndOf="@+id/user_pic_card"
         app:layout_constraintBottom_toBottomOf="@id/user_pic_card"
+        app:layout_constraintEnd_toStartOf="@id/verguide3"
         android:elevation="4dp"
         android:outlineProvider="none"
         android:background="@color/cardview_dark_background"
-        android:alpha=".8">
+        android:alpha=".8"
+        android:onClick="takePicture">
 
         <ImageView
             android:id="@+id/change_pic"
@@ -78,6 +79,41 @@
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_camera"
+            android:tint="@color/cardview_light_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/verguide3"
+        app:layout_constraintGuide_percent=".5"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clgal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/verguide3"
+        app:layout_constraintEnd_toEndOf="@id/user_pic_card"
+        app:layout_constraintBottom_toBottomOf="@id/user_pic_card"
+        android:elevation="4dp"
+        android:outlineProvider="none"
+        android:background="@color/cardview_dark_background"
+        android:alpha=".8"
+        android:onClick="openGallery">
+
+        <ImageView
+            android:id="@+id/open_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_gallery"
             android:tint="@color/cardview_light_background"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

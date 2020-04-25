@@ -23,9 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 import ph.appdev.grocerylistapp.adapter.AdtnllistAdapter;
@@ -77,12 +79,14 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         adtntotalprice = findViewById(R.id.adtnltotalprice);
         totalprice = findViewById(R.id.totalprice);
 
+        timestamp.setVisibility(View.GONE);
         bundle = getIntent().getExtras();
         assert bundle != null;
         myList = bundle.getParcelable("mylistobj");
         if(bundle.getString("action").toLowerCase().equals("edit")){
+            timestamp.setVisibility(View.VISIBLE);
             title.setText(myList.getTitle());
-            timestamp.setText(myList.getTimestamp());
+            timestamp.setText(formatDate(myList.getTimestamp()));
             notes.setText(myList.getNote());
             checklists = dbHelper.getUserMyListChecklists(myList.getId());
             adtnlists = dbHelper.getUserMyListAdtnlists(myList.getId());
@@ -125,6 +129,19 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         }));
 
         updateValueofViewsOutsideRV();
+    }
+
+    private String formatDate(String dateStr) {
+        try {
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = fmt.parse(dateStr);
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat fmtOut = new SimpleDateFormat("HH:mm MMM d");
+            return fmtOut.format(date);
+        } catch (ParseException e) {
+
+        }
+
+        return "";
     }
 
     @SuppressLint("DefaultLocale")
@@ -247,18 +264,14 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
             myList.setTitle(title.getText().toString());
             myList.setNote(notes.getText().toString());
 
-            calendar = Calendar.getInstance();
-            customdateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            date = customdateformat.format(calendar.getTime());
-
-            myList.setTimestamp(date);
+            myList.setTimestamp( getCurrentTime());
             dbHelper.updateMList(myList);
 //            backtoMain.putExtra("action", "save");
 
         }
         else {
             //new list
-            mylistid = dbHelper.insertMList(title.getText().toString(), notes.getText().toString());
+            mylistid = dbHelper.insertMList(title.getText().toString(), notes.getText().toString(), getCurrentTime());
             for (Checklist item : checklists){
                 itemid = dbHelper.insertChecklist(item.getName(), item.getUnitPrice(), item.getisChecked(), item.getPrice(), item.getQuantity());
                 dbHelper.insertMyChecklists(mylistid, itemid);
@@ -286,16 +299,23 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
 
     }
 
-   /* public double getTotalAmount(){
-        double totalamount = 0;
-        for (Adtnlist item : adtnlists){
-            if(item.getisChecked() == 1){
-                totalamount = totalamount + item.getAmount();
-            }
-        }
-        return totalamount;
+    private String getCurrentTime() {
+        calendar = Calendar.getInstance();
+        customdateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        date = customdateformat.format(calendar.getTime());
+        return date;
     }
-*/
+
+    /* public double getTotalAmount(){
+         double totalamount = 0;
+         for (Adtnlist item : adtnlists){
+             if(item.getisChecked() == 1){
+                 totalamount = totalamount + item.getAmount();
+             }
+         }
+         return totalamount;
+     }
+ */
     public void updateAmountPerInfo(){
         int position = 0;
         for (Adtnlist info: adtnlists){
