@@ -32,6 +32,7 @@ public class LogInActivity extends AppCompatActivity {
         if(SavedSharedPreference.getLoggedStatus(getApplicationContext())) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
+            finish();
         } else {
             cllogin.setVisibility(View.VISIBLE);
         }

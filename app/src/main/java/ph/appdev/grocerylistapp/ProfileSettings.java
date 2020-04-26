@@ -41,7 +41,7 @@ public class ProfileSettings extends AppCompatActivity {
     EditText name, email, password, confirm_pass, budget;
     KeyListener namelistener, emaillistener, budgetlistener;
     ImageView eye, eye1, user_pic;
-    Button edit, logout, save, cancel;
+    Button edit, logout, save, cancel, changepass;
     Uri file;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_GALLERY_IMAGE = 2;
@@ -67,6 +67,7 @@ public class ProfileSettings extends AppCompatActivity {
         cancel = findViewById(R.id.cancelbtn);
         save = findViewById(R.id.save_profile);
         user_pic = findViewById(R.id.user_pic);
+        changepass = findViewById(R.id.change_password);
 
         dbHelper = new DBHelper(this);
 
@@ -78,6 +79,7 @@ public class ProfileSettings extends AppCompatActivity {
         confirm_pass.setVisibility(View.GONE);
         eye.setVisibility(View.GONE);
         eye1.setVisibility(View.GONE);
+        changepass.setVisibility(View.GONE);
 
         namelistener = name.getKeyListener();
         name.setKeyListener(null);
@@ -86,18 +88,6 @@ public class ProfileSettings extends AppCompatActivity {
         budgetlistener = budget.getKeyListener();
         budget.setKeyListener(null);
 
-
-
-/*        clcam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dispatchTakePictureIntent();
-  *//*              if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    clcam.setEnabled(false);
-                    ActivityCompat.requestPermissions(ProfileSettings.this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
-                }*//*
-            }
-        });*/
 
     }
 
@@ -132,38 +122,6 @@ public class ProfileSettings extends AppCompatActivity {
             }
         }
     }
-/*    public void takePicture(View view) {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        file = Uri.fromFile(getOutputMediaFile());
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
-
-        startActivityForResult(intent, 100);
-    }*/
-
-    private static File getOutputMediaFile(){
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "CameraDemo");
-
-        if (!mediaStorageDir.exists()){
-            if (!mediaStorageDir.mkdirs()){
-                return null;
-            }
-        }
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        return new File(mediaStorageDir.getPath() + File.separator +
-                "IMG_"+ timeStamp + ".jpg");
-    }
-/*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            if (resultCode == RESULT_OK) {
-                user_pic.setImageURI(file);
-            }
-        }
-    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -207,12 +165,14 @@ public class ProfileSettings extends AppCompatActivity {
         SavedSharedPreference.setLoggedIn(getApplicationContext(), false, SavedSharedPreference.getLoggedUser(getApplicationContext()));
         Intent logoutintent = new Intent(getApplicationContext(), LogInActivity.class);
         startActivity(logoutintent);
+        finish();
 
     }
 
     public void cancelEdit(View view){
         clcam.setVisibility(View.GONE);
         clgal.setVisibility(View.GONE);
+        changepass.setVisibility(View.GONE);
         password.setVisibility(View.GONE);
         confirm_pass.setVisibility(View.GONE);
 
@@ -237,10 +197,7 @@ public class ProfileSettings extends AppCompatActivity {
     public void editProfile(View view){
         clcam.setVisibility(View.VISIBLE);
         clgal.setVisibility(View.VISIBLE);
-        password.setVisibility(View.VISIBLE);
-        confirm_pass.setVisibility(View.VISIBLE);
-        eye.setVisibility(View.VISIBLE);
-        eye1.setVisibility(View.VISIBLE);
+        changepass.setVisibility(View.VISIBLE);
 
         name.setKeyListener(namelistener);
         budget.setKeyListener(budgetlistener);
@@ -249,6 +206,15 @@ public class ProfileSettings extends AppCompatActivity {
         logout.setVisibility(View.GONE);
         save.setVisibility(View.VISIBLE);
         cancel.setVisibility(View.VISIBLE);
+    }
+
+    public void changePassword(View view){
+        password.setText("");
+        confirm_pass.setText("");
+        password.setVisibility(View.VISIBLE);
+        confirm_pass.setVisibility(View.VISIBLE);
+        eye.setVisibility(View.VISIBLE);
+        eye1.setVisibility(View.VISIBLE);
     }
 
     public void saveChanges(View view){
@@ -269,7 +235,7 @@ public class ProfileSettings extends AppCompatActivity {
         boolean result = dbHelper.saveUser(name.getText().toString(), email.getText().toString(), password.getText().toString(), Double.parseDouble(budget.getText().toString()), imageInByte);
         if (result){
             Toast.makeText(getApplicationContext(), "Saved Changes", Toast.LENGTH_LONG).show();
-            finish();
+            backtoMain(view);
         } else {
             Toast.makeText(getApplicationContext(), "Failed to save changes.", Toast.LENGTH_LONG).show();
         }
@@ -283,6 +249,8 @@ public class ProfileSettings extends AppCompatActivity {
             name.setText(cursor.getString(cursor.getColumnIndex(User.USER_NAME)));
             email.setText(cursor.getString(cursor.getColumnIndex(User.EMAIL)));
             budget.setText(String.valueOf(cursor.getDouble(cursor.getColumnIndex(User.BUDGET))));
+            password.setText(String.valueOf(cursor.getString(cursor.getColumnIndex(User.PASSWORD))));
+            confirm_pass.setText(String.valueOf(cursor.getString(cursor.getColumnIndex(User.PASSWORD))));
 
             byte[] outImage = cursor.getBlob(cursor.getColumnIndex(User.PIC));
             if(outImage == null){
@@ -316,17 +284,6 @@ public class ProfileSettings extends AppCompatActivity {
             return false;
         } else {
             budget.setError(null);
-        }
-        return true;
-    }
-
-    private boolean validateEmail() {
-        Cursor cursor = dbHelper.getUser(SavedSharedPreference.getLoggedUser(getApplicationContext()));
-        if(cursor.getCount() != 0){
-            email.setError("Email already registered.");
-            return false;
-        } else {
-            name.setError(null);
         }
         return true;
     }
@@ -381,8 +338,8 @@ public class ProfileSettings extends AppCompatActivity {
     }
 
     public void backtoMain(View view){
-        Intent tomain = new Intent();
-        setResult(RESULT_CANCELED, tomain);
+        Intent tomain = new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(tomain);
         finish();
     }
 }

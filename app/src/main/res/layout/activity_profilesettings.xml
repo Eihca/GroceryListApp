@@ -71,7 +71,6 @@
         android:outlineProvider="none"
         android:padding="@dimen/margin_padding_size_small"
         android:background="@drawable/black_loginbtn"
-        android:alpha=".8"
         android:layout_margin="@dimen/margin_padding_size_medium"
         android:onClick="takePicture">
 
@@ -109,7 +108,6 @@
         android:outlineProvider="none"
         android:layout_margin="@dimen/margin_padding_size_medium"
         android:background="@drawable/black_loginbtn"
-        android:alpha=".8"
         android:onClick="openGallery">
 
         <ImageView
@@ -155,6 +153,23 @@
         android:gravity="center"
         android:padding="@dimen/margin_padding_size_small" />
 
+    <Button
+        android:id="@+id/change_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CHANGE PASSWORD"
+        android:fontFamily="monospace"
+        android:textColor="@android:color/white"
+        android:background="@drawable/black_loginbtn"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="@dimen/margin_padding_size_large"
+        android:layout_marginEnd="20dp"
+        android:onClick="changePassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_email"
+        />
+
     <EditText
         android:id="@+id/user_password"
         android:layout_width="match_parent"
@@ -162,7 +177,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/border"
-        app:layout_constraintTop_toBottomOf="@+id/user_email"
+        app:layout_constraintTop_toBottomOf="@+id/change_password"
         android:layout_margin="@dimen/margin_padding_size_large"
         android:hint="New Password"
         android:fontFamily="@font/raleway_semibold"

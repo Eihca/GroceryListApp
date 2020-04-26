@@ -135,11 +135,13 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         if (viewHolder instanceof ChecklistAdapter.MyViewHolder) {
-            showActionsDialog(viewHolder.getAdapterPosition(), "checklists");
+            showActionsDialog(viewHolder.getAdapterPosition(), "rvChecklist");
             cadapter.notifyItemChanged(viewHolder.getAdapterPosition());
+
         }else {
-            showActionsDialog(viewHolder.getAdapterPosition(), "adtnlists");
+            showActionsDialog(viewHolder.getAdapterPosition(), "rvAdtnllist");
             aadapter.notifyItemChanged(viewHolder.getAdapterPosition());
+
         }
 
     }
@@ -186,7 +188,7 @@ public class CheckListActivity extends AppCompatActivity implements ChecklistAda
         builder.setItems(colors, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(fromwhere.equals("rvchecklist")){
+                if(fromwhere.equals("rvChecklist")){
                     deleteRow(position, "checklists");
                 }else {
                     deleteRow(position, "adtnlists");
